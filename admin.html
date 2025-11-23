@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NY2026 Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: #050517;
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 16px auto;
+            padding: 16px;
+            color: #fff;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .admin-card {
+            background: rgba(12, 12, 40, 0.9);
+            border-radius: 12px;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .admin-card h3 {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .admin-card .value {
+            font-size: 1.4rem;
+            margin-top: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        th, td {
+            padding: 6px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        th {
+            text-align: left;
+            opacity: 0.85;
+        }
+        .btn-small {
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .danger {
+            color: #ff7a7a;
+        }
+        .muted {
+            opacity: 0.7;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <h1>NY2026 Admin Dashboard</h1>
+                <p class="muted" id="adminSubtitle">
+                    Loading…
+                </p>
+            </div>
+            <div>
+                <span id="adminUserInfo" class="muted"></span>
+                <button id="adminSignInBtn" class="btn-small">Sign in with Google</button>
+                <button id="adminSignOutBtn" class="btn-small" style="display:none;">Sign out</button>
+            </div>
+        </div>
+
+        <div id="adminAccessDenied" style="display:none;" class="danger">
+            Access denied. You must sign in with the admin email to view this dashboard.
+        </div>
+
+        <div id="adminContent" style="display:none;">
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <h3>Total Celebrations</h3>
+                    <div class="value" id="statTotalCelebrations">-</div>
+                </div>
+                <div class="admin-card">
+                    <h3>Total Views</h3>
+                    <div class="value" id="statTotalViews">-</div>
+                </div>
+                <div class="admin-card">
+                    <h3>Total Shares</h3>
+                    <div class="value" id="statTotalShares">-</div>
+                </div>
+                <div class="admin-card">
+                    <h3>Total Created</h3>
+                    <div class="value" id="statTotalCreates">-</div>
+                </div>
+            </div>
+
+            <h2 style="margin-bottom:6px;">Recent Celebrations</h2>
+            <p class="muted">Last 20 celebrations. Delete will also remove associated photo & events.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Friend</th>
+                        <th>Sender</th>
+                        <th>Created</th>
+                        <th>Photo</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="celebrationsTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Firebase + Admin JS -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+
+    <script src="admin.js"></script>
+</body>
+</html>

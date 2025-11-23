@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Year Gift | 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0530">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <canvas id="bgCanvas"></canvas>
+    <div class="overlay"></div>
+
+    <header class="top-bar">
+        <div class="logo-text">
+            Happy New Year 2026
+        </div>
+    </header>
+
+    <main class="container one-column">
+        <section class="card form-card">
+            <h1>Create a New Year Gift</h1>
+            <p class="muted">
+                Your friend will see their name, optional photo, fireworks, music and a surprise gift box.
+            </p>
+
+            <form id="createForm">
+                <div class="form-group">
+                    <label for="senderName">Your Name</label>
+                    <input type="text" id="senderName" placeholder="e.g. Bhaskar" required>
+                    <small class="muted">You will be shown as the person who sent the gift.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="friendName">Friend's Name</label>
+                    <input type="text" id="friendName" placeholder="e.g. Suriya" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="friendPhoto">Friend's Photo (optional)</label>
+                    <input type="file" id="friendPhoto" accept="image/*">
+                    <small class="muted">If you don't upload, celebration will still run with default visuals.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="customMessage">Custom Message (optional)</label>
+                    <textarea id="customMessage" rows="4" placeholder="Write a special message..."></textarea>
+                    <small class="muted">This message will appear with your signature in the celebration.</small>
+                </div>
+
+                <button type="submit" class="btn primary">🎉 Generate Celebration Link</button>
+            </form>
+
+            <div id="createResult" class="result-box" style="display:none;">
+                <h3>Gift created! Share this link:</h3>
+                <input type="text" id="shareLinkInput" readonly>
+                <div class="share-section">
+                    <button class="btn secondary" id="copyLinkBtn">📋 Copy link</button>
+                    <button class="btn ghost" id="whatsappShareBtn">WhatsApp</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+
+    <script src="create.js"></script>
+</body>
+</html>
