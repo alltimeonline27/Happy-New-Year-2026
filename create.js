@@ -191,7 +191,22 @@ async function handleGenerateClick() {
     linkResultBlock.style.display = "block";
     statusEl.textContent = "Link generated successfully! Share it with your friend.";
 
-    resultLinkEl.innerHTML = `<a href="${celebrationUrl}" target="_blank">${celebrationUrl}</a>`;
+    // Enable copy button
+    copyLinkBtn.onclick = () => {
+      navigator.clipboard.writeText(celebrationUrl)
+        .then(() => {
+          statusEl.textContent = "Link copied to clipboard.";
+        })
+        .catch(() => {
+          alert("Failed to copy link. Please copy manually.");
+        });
+    };
+
+    // Enable open button
+    openLinkBtn.onclick = () => {
+      window.open(celebrationUrl, "_blank");
+    };
+
 
     // SHARE BUTTONS
     document.getElementById("shareWhatsapp").onclick = () => {
