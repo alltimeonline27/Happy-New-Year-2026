@@ -41,11 +41,57 @@ const openLinkBtn = document.getElementById("openLinkBtn");
   }
 })();
 
+// ==============================
+// OPTIMIZED IMAGE COMPRESSION (v2)
+// ==============================
+function compressImage(file, maxWidth = 700, quality = 0.55) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      img.src = event.target.result;
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const scale = maxWidth / img.width;
+      const newWidth = Math.min(maxWidth, img.width);
+      const newHeight = img.height * scale;
+
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+
+      ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+      canvas.toBlob(
+        (blob) => resolve(blob),
+        "image/jpeg",
+        quality
+      );
+    };
+
+    img.onerror = reject;
+  });
+}
+
+
+
 // Helpers
 async function uploadImageToCloudinary(file) {
   if (!file) return null;
+
+  // Auto compress image before uploading
+  const compressedBlob = await compressImage(file, 700, 0.55);
+  const compressedFile = new File([compressedBlob], file.name, { type: "image/jpeg" });
+
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("file", compressedFile);
   formData.append("upload_preset", UPLOAD_PRESET);
 
   const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
@@ -61,6 +107,8 @@ async function uploadImageToCloudinary(file) {
   const data = await res.json();
   return data.secure_url;
 }
+
+
 
 // Fetch Geo Info with a Timeout so the app doesn't freeze
 async function getGeoInfo() {
