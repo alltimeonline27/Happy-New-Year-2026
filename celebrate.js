@@ -338,6 +338,34 @@ function applyTheme(theme) {
 
   body.classList.add(`theme-${theme}`);
 }
+// ================== DARK / LIGHT THEME (Always default = Light) ================== //
+const themeToggle = document.getElementById("themeToggle");
+
+// Always apply LIGHT MODE on page load
+function initTheme() {
+  document.body.classList.remove("dark-mode");
+  if (themeToggle) themeToggle.textContent = "🌙";
+}
+
+// When user clicks toggle
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("dark-mode");
+
+    if (isDark) {
+      // Switch to Light
+      document.body.classList.remove("dark-mode");
+      themeToggle.textContent = "🌙";
+    } else {
+      // Switch to Dark
+      document.body.classList.add("dark-mode");
+      themeToggle.textContent = "☀️";
+    }
+  });
+}
+
+// CALL INIT (Very Important — must run AFTER everything)
+window.addEventListener("DOMContentLoaded", initTheme);
 
 
 // Init
