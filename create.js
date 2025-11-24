@@ -251,6 +251,24 @@ function setupShareButtons(url, senderName) {
   }
 }
 
+// ========================= LEADERBOARD UPDATE ========================= //
+
+function slugifyName(name) {
+  return name.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "_");
+}
+
+async function incrementCreatorCount(name) {
+  if (!name) return;
+
+  const id = slugifyName(name);
+  const ref = db.collection("creators").doc(id);
+
+  await ref.set({
+    displayName: name,
+    count: firebase.firestore.FieldValue.increment(1)
+  }, { merge: true });
+}
+
 
 // ===============================
 // MAIN GENERATE HANDLER
@@ -310,6 +328,9 @@ async function handleGenerateClick() {
     resultLinkEl.innerHTML = `<a href="${finalUrl}" target="_blank">${finalUrl}</a>`;
     linkResultBlock.style.display = "block";
     statusEl.textContent = "Gift created successfully!";
+    incrementCreatorCount(sender);
+loadLeaderboard(sender);
+
 
     // Copy Link
     copyLinkBtn.onclick = () =>
@@ -341,3 +362,76 @@ if (generateBtn) {
 
 // Init QR download listener
 setupDownloadQR();
+
+// ========================= LEADERBOARD LOGIC ========================= //
+
+function slugifyName(name) {
+  return name.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "_");
+}
+
+function getBadge(count) {
+  if (count >= 30) return "🥇 Gold";
+  if (count >= 15) return "🥈 Silver";
+  if (count >= 5)  return "🥉 Bronze";
+  return null;
+}
+
+async function loadLeaderboard(currentSender = null) {
+  const list = document.getElementById("leaderboard-list");
+  const rankBox = document.getElementById("your-rank");
+  if (!list) return;
+
+  try {
+    // fetch top 5 creators
+    const snap = await db.collection("creators")
+      .orderBy("count", "desc")
+      .limit(5)
+      .get();
+
+    list.innerHTML = "";
+    let rank = 1;
+    let userRank = null;
+    let userCount = 0;
+
+    snap.forEach(doc => {
+      const d = doc.data();
+      const badge = getBadge(d.count);
+      const isCurrent = currentSender && slugifyName(currentSender) === doc.id;
+
+      if (isCurrent) {
+        userRank = rank;
+        userCount = d.count;
+      }
+
+      list.innerHTML += `
+        <li class="${isCurrent ? 'highlight' : ''}">
+          <div class="leader-name">${rank}. ${d.displayName}</div>
+          <div class="leader-count">${d.count} ${badge ? '• '+badge : ''}</div>
+        </li>
+      `;
+      rank++;
+    });
+
+    // If sender not in top 5 → calculate their rank
+    if (currentSender) {
+      const sid = slugifyName(currentSender);
+      const doc = await db.collection("creators").doc(sid).get();
+
+      if (doc.exists) {
+        const count = doc.data().count;
+        const higher = await db.collection("creators")
+          .where("count", ">", count)
+          .get();
+        userRank = higher.size + 1;
+        userCount = count;
+
+        // show user rank
+        rankBox.textContent = `You are ranked #${userRank}`;
+      }
+    }
+
+  } catch (e) {
+    list.innerHTML = "<li>Leaderboard unavailable</li>";
+  }
+}
+

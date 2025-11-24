@@ -439,3 +439,61 @@ small {
     margin-top: 24px;
   }
 }
+
+.footer-bar {
+  margin-top: 40px;
+  padding: 18px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+.footer-bar a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#leaderboard-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+#leaderboard-card h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg,#ffe3a1,#ffc777);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#leaderboard-list li {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  display: flex;
+  justify-content: space-between;
+}
+#leaderboard-list li.highlight {
+  background: rgba(255,200,120,0.15);
+  border: 1px solid rgba(255,200,120,0.3);
+  transform: scale(1.02);
+}
+
+.leader-name { font-weight:600; }
+.leader-count { font-weight:700; }
+#your-rank {
+  margin-top: 12px;
+  text-align: center;
+  font-weight: 600;
+  background: linear-gradient(90deg,#ffe3a1,#ffc777);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Scrollbar Styling for Admin Table */
+.admin-table::-webkit-scrollbar {
+  width: 8px;
+}
