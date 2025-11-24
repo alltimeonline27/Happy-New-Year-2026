@@ -1,4 +1,8 @@
-// Firebase (Compat) Initialization
+// create.js - cleaned and optimized
+
+// ===============================
+// Firebase Initialization
+// ===============================
 const firebaseConfig = {
   apiKey: "AIzaSyAHKe9YThgj5WSxNsaq4Rq8Fh32uktUd0b",
   authDomain: "happy-new-year-2026-7eac0.firebaseapp.com",
@@ -14,11 +18,17 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
-// Cloudinary Settings
-const CLOUD_NAME = "dfczitdpf";
-const UPLOAD_PRESET = "newyear2026"; // Ensure this is "Unsigned" in Cloudinary settings
 
-// DOM Elements
+// ===============================
+// Cloudinary Settings
+// ===============================
+const CLOUD_NAME = "dfczitdpf";
+const UPLOAD_PRESET = "newyear2026";
+
+
+// ===============================
+// DOM ELEMENTS
+// ===============================
 const senderNameInput = document.getElementById("senderName");
 const friendNameInput = document.getElementById("friendName");
 const messageInput = document.getElementById("customMessage");
@@ -30,39 +40,51 @@ const resultLinkEl = document.getElementById("resultLink");
 const copyLinkBtn = document.getElementById("copyLinkBtn");
 const openLinkBtn = document.getElementById("openLinkBtn");
 
-// Prefill sender if coming from friend's share (?sender=...)
+// QR Elements
+const qrSection = document.getElementById("qrSection");
+const qrContainer = document.getElementById("qrcode");
+const downloadQRBtn = document.getElementById("downloadQR");
+
+// Share Buttons
+const shareWhatsappBtn = document.getElementById("shareWhatsapp");
+const shareTelegramBtn = document.getElementById("shareTelegram");
+const shareFacebookBtn = document.getElementById("shareFacebook");
+
+
+// ===============================
+// Prefill sender (?sender=NAME)
+// ===============================
 (function prefillSender() {
   try {
     const params = new URLSearchParams(window.location.search);
     const s = params.get("sender");
     if (s && senderNameInput) senderNameInput.value = s;
-  } catch (e) {
-    console.warn("Could not prefill sender:", e);
+  } catch (err) {
+    console.warn("Prefill sender failed:", err);
   }
 })();
 
-// ==============================
-// OPTIMIZED IMAGE COMPRESSION (v2)
-// ==============================
+
+// ===============================
+// OPTIMIZED IMAGE COMPRESSION
+// ===============================
 function compressImage(file, maxWidth = 700, quality = 0.55) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const reader = new FileReader();
 
-    reader.onload = (event) => {
-      img.src = event.target.result;
-    };
-
+    reader.onload = (e) => (img.src = e.target.result);
     reader.onerror = reject;
+
     reader.readAsDataURL(file);
 
     img.onload = () => {
+      const ratio = Math.min(1, maxWidth / img.width);
+      const newWidth = Math.round(img.width * ratio);
+      const newHeight = Math.round(img.height * ratio);
+
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
-
-      const scale = maxWidth / img.width;
-      const newWidth = Math.min(maxWidth, img.width);
-      const newHeight = img.height * scale;
 
       canvas.width = newWidth;
       canvas.height = newHeight;
@@ -81,195 +103,233 @@ function compressImage(file, maxWidth = 700, quality = 0.55) {
 }
 
 
-
-// Helpers
+// ===============================
+// Upload to Cloudinary
+// ===============================
 async function uploadImageToCloudinary(file) {
   if (!file) return null;
 
-  // Auto compress image before uploading
-  const compressedBlob = await compressImage(file, 700, 0.55);
-  const compressedFile = new File([compressedBlob], file.name, { type: "image/jpeg" });
+  // Try compression
+  let compressedBlob;
+  try {
+    compressedBlob = await compressImage(file, 700, 0.55);
+  } catch (err) {
+    console.warn("Compression failed:", err);
+    compressedBlob = file;
+  }
+
+  const compressedFile = new File([compressedBlob], file.name, {
+    type: "image/jpeg"
+  });
 
   const formData = new FormData();
   formData.append("file", compressedFile);
   formData.append("upload_preset", UPLOAD_PRESET);
 
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-    method: "POST",
-    body: formData
-  });
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+    {
+      method: "POST",
+      body: formData
+    }
+  );
 
-  if (!res.ok) {
-    console.error("Cloudinary upload failed.");
-    throw new Error("Image upload failed");
-  }
+  if (!res.ok) throw new Error("Image upload failed");
 
   const data = await res.json();
-  return data.secure_url;
+  return {
+    url: data.secure_url,
+    id: data.public_id
+  };
 }
 
 
-
-// Fetch Geo Info with a Timeout so the app doesn't freeze
+// ===============================
+// GET USER GEO INFO (Optional)
+// ===============================
 async function getGeoInfo() {
-  const fetchGeo = fetch("https://ipapi.co/json/");
+  const req = fetch("https://ipapi.co/json/");
   const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error("Timeout")), 2000)
+    setTimeout(() => reject("timeout"), 2000)
   );
 
   try {
-    const res = await Promise.race([fetchGeo, timeout]);
-    if (!res.ok) return {};
+    const res = await Promise.race([req, timeout]);
+    if (!res || !res.ok) return {};
     const data = await res.json();
     return {
-      ip: data.ip || "",
-      country: data.country_name || "",
-      countryCode: data.country || "",
-      region: data.region || "",
-      city: data.city || ""
+      ip: data.ip,
+      country: data.country_name,
+      city: data.city
     };
-  } catch (err) {
-    console.warn("Geo lookup skipped:", err);
-    return {}; // Return empty object on failure/timeout
+  } catch {
+    return {};
   }
 }
 
+
+// ===============================
+// BASE URL BUILDER
+// ===============================
 function getBaseUrl() {
-  // Return origin + folder path ensuring trailing slash
   const origin = window.location.origin;
-  const path = window.location.pathname;
-  const folder = path.replace(/[^/]*$/, '');
-  return `${origin}${folder}`;
+  const folder = window.location.pathname.replace(/[^/]*$/, "");
+  return origin + folder;
 }
 
-// Main Handler
-async function handleGenerateClick() {
-  const senderName = senderNameInput ? senderNameInput.value.trim() : "";
-  const receiverName = friendNameInput ? friendNameInput.value.trim() : "";
-  const customMsg = messageInput ? messageInput.value.trim() : "";
-  const file = photoInput && photoInput.files ? photoInput.files[0] : null;
 
-  if (!senderName || !receiverName) {
-    alert("Please enter both your name and your friend’s name.");
-    return;
+// ===============================
+// QR HELPERS
+// ===============================
+function clearQRCode() {
+  if (qrContainer) qrContainer.innerHTML = "";
+  if (qrSection) qrSection.style.display = "none";
+}
+
+function generateQRCode(url) {
+  if (!window.QRCode) return;
+
+  qrContainer.innerHTML = "";
+
+  new QRCode(qrContainer, {
+    text: url,
+    width: 180,
+    height: 180,
+    colorDark: "#000",
+    colorLight: "#fff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  qrSection.style.display = "block";
+}
+
+function setupDownloadQR() {
+  if (!downloadQRBtn) return;
+
+  downloadQRBtn.onclick = () => {
+    const img = qrContainer.querySelector("img");
+    if (!img) return alert("QR not ready");
+
+    const link = document.createElement("a");
+    link.href = img.src;
+    link.download = "newyear_qr.png";
+    link.click();
+  };
+}
+
+
+// ===============================
+// SHARE BUTTONS (Create Page)
+// ===============================
+function setupShareButtons(url, senderName) {
+  if (shareWhatsappBtn) {
+    shareWhatsappBtn.onclick = () => {
+      const msg = `🎉 I created a New Year 2026 Gift for you!\nOpen your surprise: ${url}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+    };
+  }
+
+  if (shareTelegramBtn) {
+    shareTelegramBtn.onclick = () => {
+      const msg = `🎉 I created a New Year 2026 Gift for you!\nOpen your surprise: ${url}`;
+      window.open(
+        `https://t.me/share/url?url=${encodeURIComponent(
+          url
+        )}&text=${encodeURIComponent(msg)}`
+      );
+    };
+  }
+
+  if (shareFacebookBtn) {
+    shareFacebookBtn.onclick = () => {
+      window.open(
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          url
+        )}`
+      );
+    };
+  }
+}
+
+
+// ===============================
+// MAIN GENERATE HANDLER
+// ===============================
+async function handleGenerateClick() {
+  const sender = senderNameInput.value.trim();
+  const receiver = friendNameInput.value.trim();
+  const customMsg = messageInput.value.trim();
+  const file = photoInput.files[0];
+
+  if (!sender || !receiver) {
+    return alert("Enter both names");
   }
 
   generateBtn.disabled = true;
+  clearQRCode();
   linkResultBlock.style.display = "none";
-  statusEl.textContent = "Creating your New Year gift… Please wait.";
+  statusEl.textContent = "Preparing your gift…";
 
   try {
-    let photoUrl = null;
+    let imgResult = null;
+
+    // Upload Image
     if (file) {
       statusEl.textContent = "Uploading photo…";
-      photoUrl = await uploadImageToCloudinary(file);
+      imgResult = await uploadImageToCloudinary(file);
     }
 
-    statusEl.textContent = "Finalizing gift…";
+    // Geo
+    statusEl.textContent = "Finalizing…";
     const geo = await getGeoInfo();
 
+    // Save to Firestore
     const docRef = await db.collection("celebrations").add({
-      senderName,
-      receiverName,
+      senderName: sender,
+      receiverName: receiver,
       customMessage: customMsg,
-      photoUrl: photoUrl || null,
+      photoUrl: imgResult ? imgResult.url : null,
+      cloudinaryId: imgResult ? imgResult.id : null,
       views: 0,
       shares: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       lastOpened: firebase.firestore.FieldValue.serverTimestamp(),
-      device: navigator.platform || "",
+      device: navigator.platform,
       ip: geo.ip || "",
       country: geo.country || "",
       city: geo.city || ""
     });
 
-    const baseUrl = getBaseUrl();
-    const cleanBase = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-    const celebrationUrl = `${cleanBase}celebrate.html?id=${encodeURIComponent(docRef.id)}`;
+    // Build link
+    const base = getBaseUrl();
+    const finalUrl = `${base}celebrate.html?id=${encodeURIComponent(
+      docRef.id
+    )}`;
 
-    resultLinkEl.innerHTML = `<a href="${celebrationUrl}" target="_blank">${celebrationUrl}</a>`;
+    // Display link
+    resultLinkEl.innerHTML = `<a href="${finalUrl}" target="_blank">${finalUrl}</a>`;
     linkResultBlock.style.display = "block";
-    statusEl.textContent = "Link generated successfully! Share it with your friend.";
+    statusEl.textContent = "Gift created successfully!";
 
-    // Enable copy button
-    copyLinkBtn.onclick = () => {
-      navigator.clipboard.writeText(celebrationUrl)
-        .then(() => {
-          statusEl.textContent = "Link copied to clipboard.";
-        })
-        .catch(() => {
-          alert("Failed to copy link. Please copy manually.");
-        });
-    };
+    // Copy Link
+    copyLinkBtn.onclick = () =>
+      navigator.clipboard
+        .writeText(finalUrl)
+        .then(() => (statusEl.textContent = "Copied!"))
+        .catch(() => alert("Copy failed"));
 
-    // Enable open button
-    openLinkBtn.onclick = () => {
-      window.open(celebrationUrl, "_blank");
-    };
+    // Open Link
+    openLinkBtn.onclick = () => window.open(finalUrl, "_blank");
 
+    // Share Buttons
+    setupShareButtons(finalUrl, sender);
 
-    // SHARE BUTTONS
-    document.getElementById("shareWhatsapp").onclick = () => {
-      const msg = `🎉 I created a New Year 2026 Gift for you!\nOpen your surprise: ${celebrationUrl}`;
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-    };
-
-    document.getElementById("shareTelegram").onclick = () => {
-      const msg = `🎉 I created a New Year 2026 Gift for you!\nOpen your surprise: ${celebrationUrl}`;
-      window.open(`https://t.me/share/url?url=${encodeURIComponent(celebrationUrl)}&text=${encodeURIComponent(msg)}`, "_blank");
-    };
-
-    document.getElementById("shareFacebook").onclick = () => {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(celebrationUrl)}`, "_blank");
-    };
-
-    document.getElementById("shareCopy").onclick = () => {
-      navigator.clipboard.writeText(celebrationUrl);
-      alert("Your gift link copied!");
-    };
-
-    // Generate QR Code
-    const qrContainer = document.getElementById("qrcode");
-    qrContainer.innerHTML = ""; // reset previous
-
-    new QRCode(qrContainer, {
-      text: celebrationUrl,
-      width: 180,
-      height: 180,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H,
-    });
-
-    document.getElementById("qrSection").style.display = "block";
-
-    // Download QR
-    document.getElementById("downloadQR").onclick = () => {
-      const img = qrContainer.querySelector("img");
-      const link = document.createElement("a");
-      link.href = img.src;
-      link.download = "newyear_qr.png";
-      link.click();
-    };
-
-
-
-
-    // Enable copy/open buttons
-    if (copyLinkBtn) copyLinkBtn.onclick = () => {
-      navigator.clipboard.writeText(celebrationUrl).then(() => {
-        statusEl.textContent = 'Link copied to clipboard.';
-      }).catch(() => {
-        alert('Copy failed. Please copy manually.');
-      });
-    };
-
-    if (openLinkBtn) openLinkBtn.onclick = () => window.open(celebrationUrl, '_blank');
-
+    // QR Code
+    generateQRCode(finalUrl);
+    setupDownloadQR();
   } catch (err) {
-    console.error("Error creating gift:", err);
-    statusEl.textContent = "Error creating link. Please try again.";
-    alert("Something went wrong. Please check your internet connection.");
+    console.error(err);
+    alert("Error creating gift");
   } finally {
     generateBtn.disabled = false;
   }
@@ -278,3 +338,6 @@ async function handleGenerateClick() {
 if (generateBtn) {
   generateBtn.addEventListener("click", handleGenerateClick);
 }
+
+// Init QR download listener
+setupDownloadQR();
