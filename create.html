@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Create New Year 2026 Gift</title>
@@ -8,7 +9,10 @@
   <meta name="theme-color" content="#0a0530" />
   <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
 </head>
+
 <body class="create-body">
   <header class="top-bar">
     <div class="logo-text">Create Your New Year 2026 Gift</div>
@@ -55,8 +59,22 @@
         <p id="resultLink" class="link-display"></p>
         <div style="margin-top:8px; display:flex; gap:8px;">
           <button id="copyLinkBtn" class="btn">Copy Link</button>
-          <button id="openLinkBtn" class="btn">Open Link</button>
+          <button id="openLinkBtn" class="btn">Open Link to View</button>
         </div>
+        <p>Share With...</p>
+        <div id="shareButtons" style="margin-top:18px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="shareWhatsapp" style="color: rgb(82, 237, 5);">WhatsApp</button>
+          <button class="btn" id="shareTelegram" style="color: rgb(2, 224, 244);">Telegram</button>
+          <button class="btn" id="shareFacebook" style="color: rgb(5, 94, 237);">Facebook</button>
+        </div>
+        <div id="qrSection" style="margin-top:12px; display:none; text-align:center;">
+          <h3>Your QR Code</h3>
+          <div id="qrcode" style="padding:10px; background:#fff; border-radius:12px; display:inline-block;"></div>
+          <br><br>
+          <button id="downloadQR" class="btn">Download QR</button>
+        </div>
+
+
       </div>
     </section>
 
@@ -82,52 +100,53 @@
     }
   </script>
   <script>
-let keyBuffer = "";
+    let keyBuffer = "";
 
-document.addEventListener("keydown", (e) => {
-    keyBuffer += e.key.toLowerCase();
+    document.addEventListener("keydown", (e) => {
+      keyBuffer += e.key.toLowerCase();
 
-    // If admin secret code is typed
-    if (keyBuffer.includes("admin")) {
+      // If admin secret code is typed
+      if (keyBuffer.includes("admin")) {
         window.location.href = "admin.html";
+      }
+
+      // reset buffer every 10 characters 
+      if (keyBuffer.length > 10) keyBuffer = "";
+    });
+  </script>
+
+  <script>
+    // ===========================
+    // LONG PRESS ADMIN ACCESS
+    // ===========================
+    let pressTimer = null;
+
+    function startPress(event) {
+      pressTimer = setTimeout(() => {
+        window.location.href = "admin.html";
+      }, 4000); // 4 seconds
     }
 
-    // reset buffer every 10 characters 
-    if (keyBuffer.length > 10) keyBuffer = "";
-});
-</script>
+    function endPress() {
+      clearTimeout(pressTimer);
+    }
 
-<script>
-// ===========================
-// LONG PRESS ADMIN ACCESS
-// ===========================
-let pressTimer = null;
+    document.addEventListener("DOMContentLoaded", () => {
+      const logo = document.querySelector(".logo-text");
+      if (!logo) return;
 
-function startPress(event) {
-    pressTimer = setTimeout(() => {
-        window.location.href = "admin.html";
-    }, 4000); // 4 seconds
-}
+      // Mobile touch
+      logo.addEventListener("touchstart", startPress);
+      logo.addEventListener("touchend", endPress);
 
-function endPress() {
-    clearTimeout(pressTimer);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    const logo = document.querySelector(".logo-text");
-    if (!logo) return;
-
-    // Mobile touch
-    logo.addEventListener("touchstart", startPress);
-    logo.addEventListener("touchend", endPress);
-
-    // Desktop mouse
-    logo.addEventListener("mousedown", startPress);
-    logo.addEventListener("mouseup", endPress);
-    logo.addEventListener("mouseleave", endPress);
-});
-</script>
+      // Desktop mouse
+      logo.addEventListener("mousedown", startPress);
+      logo.addEventListener("mouseup", endPress);
+      logo.addEventListener("mouseleave", endPress);
+    });
+  </script>
 
 
 </body>
+
 </html>

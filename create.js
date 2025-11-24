@@ -113,7 +113,7 @@ async function uploadImageToCloudinary(file) {
 // Fetch Geo Info with a Timeout so the app doesn't freeze
 async function getGeoInfo() {
   const fetchGeo = fetch("https://ipapi.co/json/");
-  const timeout = new Promise((_, reject) => 
+  const timeout = new Promise((_, reject) =>
     setTimeout(() => reject(new Error("Timeout")), 2000)
   );
 
@@ -190,6 +190,55 @@ async function handleGenerateClick() {
     resultLinkEl.innerHTML = `<a href="${celebrationUrl}" target="_blank">${celebrationUrl}</a>`;
     linkResultBlock.style.display = "block";
     statusEl.textContent = "Link generated successfully! Share it with your friend.";
+
+    resultLinkEl.innerHTML = `<a href="${celebrationUrl}" target="_blank">${celebrationUrl}</a>`;
+
+    // SHARE BUTTONS
+    document.getElementById("shareWhatsapp").onclick = () => {
+      const msg = `🎉 I created a New Year 2026 Gift for you!\nOpen your surprise: ${celebrationUrl}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+    };
+
+    document.getElementById("shareTelegram").onclick = () => {
+      const msg = `🎉 I created a New Year 2026 Gift for you!\nOpen your surprise: ${celebrationUrl}`;
+      window.open(`https://t.me/share/url?url=${encodeURIComponent(celebrationUrl)}&text=${encodeURIComponent(msg)}`, "_blank");
+    };
+
+    document.getElementById("shareFacebook").onclick = () => {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(celebrationUrl)}`, "_blank");
+    };
+
+    document.getElementById("shareCopy").onclick = () => {
+      navigator.clipboard.writeText(celebrationUrl);
+      alert("Your gift link copied!");
+    };
+
+    // Generate QR Code
+    const qrContainer = document.getElementById("qrcode");
+    qrContainer.innerHTML = ""; // reset previous
+
+    new QRCode(qrContainer, {
+      text: celebrationUrl,
+      width: 180,
+      height: 180,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+
+    document.getElementById("qrSection").style.display = "block";
+
+    // Download QR
+    document.getElementById("downloadQR").onclick = () => {
+      const img = qrContainer.querySelector("img");
+      const link = document.createElement("a");
+      link.href = img.src;
+      link.download = "newyear_qr.png";
+      link.click();
+    };
+
+
+
 
     // Enable copy/open buttons
     if (copyLinkBtn) copyLinkBtn.onclick = () => {
