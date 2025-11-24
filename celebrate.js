@@ -196,7 +196,7 @@ function applyGiftData(data) {
   const msg =
     data.customMessage && data.customMessage.trim() !== ""
       ? `${data.customMessage}\n\n— ${senderName}`
-      : `Wishing you a year full of joy, success and beautiful moments.\nHappy New Year 2026!\n\n— ${senderName}`;
+      : `May this year heal your worries, strengthen your heart, and bring you the peace and happiness you truly deserve. \nWishing you new beginnings filled with hope, love, and growth.\nHappy New Year 2026!\n\n— ${senderName}`;
 
   if (wishText) wishText.textContent = msg;
 }
