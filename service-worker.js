@@ -1,4 +1,11 @@
-const CACHE_NAME = "ny2026-v2";
+// ===============================
+// HAPPY NEW YEAR 2026 — SERVICE WORKER (UPDATED)
+// ===============================
+
+// Change this version every time you update your website
+const CACHE_NAME = "ny2026-v3";
+
+// List of files to cache
 const ASSETS = [
   "./",
   "./index.html",
@@ -15,30 +22,54 @@ const ASSETS = [
   "./icons/icon-512.png"
 ];
 
+// Install event
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
+  self.skipWaiting(); // Activate new version immediately
+
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    })
+  );
 });
 
+// Activate event
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.map((k) => {
-          if (k !== CACHE_NAME) return caches.delete(k);
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key); // Delete old caches
+          }
         })
       )
     )
   );
+  clients.claim(); // Take control of pages immediately
 });
 
+// Fetch event (Network-first then cache fallback)
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request).catch(() => {
-      // If fetch fails (offline) and request is HTML, return celebrate.html from cache if available
-      if (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html')) {
-        return caches.match('./celebrate.html');
-      }
-      return new Response('', { status: 503, statusText: 'Service Unavailable' });
-    }))
+    fetch(event.request)
+      .then((response) => {
+        // Clone and store in cache
+        const resClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, resClone);
+        });
+        return response;
+      })
+      .catch(() => {
+        // If offline → return cached version
+        return caches.match(event.request).then((cached) => {
+          // If HTML request fails → fallback to celebrate page
+          if (!cached && event.request.headers.get("accept")?.includes("text/html")) {
+            return caches.match("./celebrate.html");
+          }
+          return cached || new Response("", { status: 503 });
+        });
+      })
   );
 });
