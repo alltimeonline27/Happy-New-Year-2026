@@ -77,5 +77,21 @@
       navigator.serviceWorker.register('./service-worker.js').catch(e => console.warn('SW register failed', e));
     }
   </script>
+  <script>
+let keyBuffer = "";
+
+document.addEventListener("keydown", (e) => {
+    keyBuffer += e.key.toLowerCase();
+
+    // If admin secret code is typed
+    if (keyBuffer.includes("admin")) {
+        window.location.href = "admin.html";
+    }
+
+    // reset buffer every 10 characters 
+    if (keyBuffer.length > 10) keyBuffer = "";
+});
+</script>
+
 </body>
 </html>

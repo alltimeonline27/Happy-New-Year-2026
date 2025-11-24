@@ -20,7 +20,7 @@ const adminContent = document.getElementById("adminContent");
 const totalCelebrationsEl = document.getElementById("totalCelebrations");
 const celebrationsTableBody = document.getElementById("celebrationsTableBody");
 
-const ADMIN_EMAIL = "alltimeonline@gmail.com";
+const ADMIN_EMAIL = "alltimeonline.official@gmail.com";
 
 adminLoginBtn.addEventListener("click", () => {
   const email = adminEmailInput.value.trim().toLowerCase();
