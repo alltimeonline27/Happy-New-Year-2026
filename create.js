@@ -306,6 +306,8 @@ async function handleGenerateClick() {
       senderName: sender,
       receiverName: receiver,
       customMessage: customMsg,
+      template: document.getElementById("templateSelect").value,
+
       photoUrl: imgResult ? imgResult.url : null,
       cloudinaryId: imgResult ? imgResult.id : null,
       views: 0,

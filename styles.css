@@ -497,3 +497,41 @@ small {
 .admin-table::-webkit-scrollbar {
   width: 8px;
 }
+#fireworks-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5; /* above canvas */
+}
+/* ================= THEMES ================= */
+
+.theme-love {
+  --bg-main: #2f0217;
+  --text-main: #ff91b3;
+  background: linear-gradient(180deg, #3a001b, #1a000e);
+}
+
+.theme-friendship {
+  --bg-main: #2f2600;
+  --text-main: #ffe169;
+  background: linear-gradient(180deg, #554400, #2a2300);
+}
+
+.theme-family {
+  --bg-main: #052f14;
+  --text-main: #98ffba;
+  background: linear-gradient(180deg, #06471f, #02230f);
+}
+
+.theme-professional {
+  --bg-main: #001e4d;
+  --text-main: #90c4ff;
+  background: linear-gradient(180deg, #003172, #001226);
+}
+
+.theme-neon {
+  --bg-main: #000000;
+  --text-main: #39ff14;
+  background-color: black;
+  background-image: radial-gradient(circle, #0b0b0b, black 70%);
+}

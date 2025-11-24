@@ -221,6 +221,8 @@ async function handleGiftOpen() {
   revealBlock.style.pointerEvents = "auto";
 
   afterGiftActions.style.opacity = "1";
+  startFireworksV2();
+
   afterGiftActions.style.pointerEvents = "auto";
 }
 
@@ -246,6 +248,8 @@ async function loadCelebration() {
     const data = snap.data();
     applyGiftData(data);
     loadLeaderboard(data.senderName);
+    applyTheme(data.template);
+
 
     createBalloons();
     startBackgroundEffects();
@@ -279,6 +283,39 @@ if (shareForwardBtn) {
 if (giftBox) {
   giftBox.addEventListener("click", handleGiftOpen);
 }
+
+// ================= FIREWORKS 2.0 (tsParticles) ================= //
+async function startFireworksV2() {
+  await tsParticles.load("fireworks-container", {
+    fullScreen: { enable: true, zIndex: -1 },
+    particles: {
+      number: { value: 0 },
+    },
+    emitters: [
+      {
+        life: { duration: 0.1, count: 1 },
+        rate: { delay: 0.15, quantity: 8 },
+        position: { x: 50, y: 100 },
+        particles: {
+          move: { speed: 25, angle: { min: 0, max: 360 } },
+          size: { value: { min: 2, max: 4 } },
+          color: { value: ["#ff0049", "#00eaff", "#ffe600", "#00ff6a"] },
+        }
+      }
+    ]
+  });
+}
+// ================= APPLY TEMPLATE THEME ================= //
+function applyTheme(theme) {
+  const body = document.body;
+
+  body.classList.remove("theme-love","theme-friendship","theme-family","theme-professional","theme-neon");
+
+  if (!theme || theme === "default") return;
+
+  body.classList.add(`theme-${theme}`);
+}
+
 
 // Init
 window.addEventListener("DOMContentLoaded", () => {
