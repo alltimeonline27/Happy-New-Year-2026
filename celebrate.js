@@ -56,15 +56,35 @@ if (loaderOverlay) {
 
 // Music
 function tryPlayMusic() {
-  if (!bgMusic) return;
-  bgMusic.volume = 0.5;
-  bgMusic.play().catch((e) => {
-    console.log("Audio autoplay waiting for click", e);
+
+  bgMusic.volume = 0;
+  bgMusic.play().then(() => {
+    let v = 0;
+    const fade = setInterval(() => {
+      v += 0.05;
+      bgMusic.volume = v;
+      if (v >= 0.8) clearInterval(fade);
+    }, 120);
   });
+
 }
+
+function setSelectedMusic(type) {
+  if (!bgMusic) return;
+
+  let file = "assets/newyear2026.mp3";
+
+  if (type === "happy") file = "assets/happy.mp3";
+  if (type === "romantic") file = "assets/romantic.mp3";
+  if (type === "party") file = "assets/party.mp3";
+  if (type === "none") file = "";
+
+  bgMusic.src = file;
+}
+
 // Add a global click listener just in case
 document.addEventListener("click", () => {
-  if(bgMusic && bgMusic.paused) tryPlayMusic();
+  if (bgMusic && bgMusic.paused) tryPlayMusic();
 }, { once: true });
 
 // URL params
@@ -249,6 +269,9 @@ async function loadCelebration() {
     applyGiftData(data);
     loadLeaderboard(data.senderName);
     applyTheme(data.template);
+    // Set music based on user's choice
+    setSelectedMusic(data.music);
+
 
 
     createBalloons();
@@ -309,7 +332,7 @@ async function startFireworksV2() {
 function applyTheme(theme) {
   const body = document.body;
 
-  body.classList.remove("theme-love","theme-friendship","theme-family","theme-professional","theme-neon");
+  body.classList.remove("theme-love", "theme-friendship", "theme-family", "theme-professional", "theme-neon");
 
   if (!theme || theme === "default") return;
 
@@ -331,7 +354,7 @@ function slugifyName(name) {
 function getBadge(count) {
   if (count >= 30) return "🥇 Gold";
   if (count >= 15) return "🥈 Silver";
-  if (count >= 5)  return "🥉 Bronze";
+  if (count >= 5) return "🥉 Bronze";
   return null;
 }
 
@@ -365,7 +388,7 @@ async function loadLeaderboard(currentSender = null) {
       list.innerHTML += `
         <li class="${isCurrent ? 'highlight' : ''}">
           <div class="leader-name">${rank}. ${d.displayName}</div>
-          <div class="leader-count">${d.count} ${badge ? '• '+badge : ''}</div>
+          <div class="leader-count">${d.count} ${badge ? '• ' + badge : ''}</div>
         </li>
       `;
       rank++;
@@ -394,3 +417,22 @@ async function loadLeaderboard(currentSender = null) {
   }
 }
 
+// ================= SOUND TOGGLE ================= //
+let soundOn = true;
+
+const soundToggle = document.getElementById("soundToggle");
+
+if (soundToggle && bgMusic) {
+  soundToggle.addEventListener("click", () => {
+    soundOn = !soundOn;
+
+    if (soundOn) {
+      bgMusic.volume = 0.8;
+      bgMusic.play();
+      soundToggle.textContent = "🔊 Sound On";
+    } else {
+      bgMusic.pause();
+      soundToggle.textContent = "🔇 Sound Off";
+    }
+  });
+}

@@ -535,3 +535,22 @@ small {
   background-color: black;
   background-image: radial-gradient(circle, #0b0b0b, black 70%);
 }
+.sound-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: rgba(255,255,255,0.1);
+  color: var(--text-main);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: 0.2s;
+}
+
+.sound-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+.sound-btn.active {
+  background: var(--accent);
+  color: #050016;
+  border: none;
+}
