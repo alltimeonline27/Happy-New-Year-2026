@@ -233,6 +233,8 @@ async function handleGiftOpen() {
   tryPlayMusic();
   giftBox.classList.add("open");
   giftBox.style.pointerEvents = "none";
+  giftBox.classList.remove("fade-scale", "fade-in", "slide-up");
+
   setTimeout(() => { giftBox.style.opacity = "0"; }, 500);
   await runCountdown();
 
@@ -363,6 +365,14 @@ if (themeToggle) {
     }
   });
 }
+// Auto-apply fade-in animations
+window.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".fade-in, .slide-up, .fade-scale")
+    .forEach((el, index) => {
+      el.style.animationDelay = (index * 0.05) + "s";
+    });
+});
+
 
 // CALL INIT (Very Important — must run AFTER everything)
 window.addEventListener("DOMContentLoaded", initTheme);

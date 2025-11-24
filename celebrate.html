@@ -24,7 +24,7 @@
 
   <div class="overlay"></div>
 
-  <header class="top-bar">
+  <header class="top-bar fade-in" fade-in>
     <div class="logo-text" id="brandTitle">HAPPY NEW YEAR 2026</div>
     <button id="soundToggle" class="sound-btn" style="background-color: rgb(234, 255, 0); color: black;">🔊 Sound On</button>
     <button id="themeToggle" class="theme-btn">☀️</button>
@@ -33,14 +33,14 @@
     <a href="create.html" class="top-link">Create Your Own</a>
   </header>
 
-  <main class="container one-column">
+  <main class="container one-column fade-in" fade-in>
     <section class="card celebration-card">
       <div class="celebration-content">
         <h2 id="headline" class="neon-title">Happy New Year 2026!</h2>
         <h3 id="senderLine" class="neon-subtitle"></h3>
 
         <div class="gift-wrapper">
-          <div class="gift-box" id="giftBox">
+          <div class="gift-box fade-scale" id="giftBox" fade-scale>
             <div class="gift-lid"></div>
             <div class="gift-body"></div>
             <div class="gift-ribbon-vertical"></div>
@@ -63,7 +63,7 @@
         </div>
 
         <div class="after-gift-actions" id="afterGiftActions" style="opacity:0; pointer-events:none;">
-          <button class="btn primary" id="shareForwardBtn">
+          <button class="btn primary fade-in" id="shareForwardBtn" fade-in>
             🎁 Create a Gift for Someone Else
           </button>
         </div>
@@ -71,7 +71,7 @@
     </section>
   </main>
 
-  <section class="card" id="leaderboard-card">
+  <section class="card slide-up" id="leaderboard-card" slide-up>
     <h3>🏆 Global Leaderboard</h3>
     <ul id="leaderboard-list" style="list-style:none; padding:0; margin:10px 0 0 0;"></ul>
     <div id="your-rank"></div>

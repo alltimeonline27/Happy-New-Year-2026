@@ -14,14 +14,14 @@
 </head>
 
 <body class="create-body">
-  <header class="top-bar">
+  <header class="top-bar fade-in" fade-in>
     <div class="logo-text">Create Your New Year 2026 Gift</div>
     <button id="themeToggle" class="theme-btn">☀️</button>
 
     <a href="celebrate.html" class="top-link">Have a Code?</a>
   </header>
 
-  <main class="container two-column">
+  <main class="container two-column fade-in" fade-in>
     <section class="card create-card">
       <h1>Create a Celebration Link</h1>
       <p class="helper-text">
@@ -69,7 +69,7 @@
 
 
 
-      <button id="generateBtn" class="btn primary full-width">
+      <button id="generateBtn" class="btn primary full-width fade-in" fade-in>
         🎁 Generate Celebration Link
       </button>
 
@@ -80,20 +80,20 @@
         <p>Copy and send this to your friend:</p>
         <p id="resultLink" class="link-display"></p>
         <div style="margin-top:8px; display:flex; gap:8px;">
-          <button id="copyLinkBtn" class="btn">Copy Link</button>
-          <button id="openLinkBtn" class="btn">Open Link to View</button>
+          <button id="copyLinkBtn" class="btn fade-in">Copy Link</button>
+          <button id="openLinkBtn" class="btn fade-in">Open Link to View</button>
         </div>
         <p>Share With...</p>
         <div id="shareButtons" style="margin-top:18px; display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn" id="shareWhatsapp" style="color: rgb(82, 237, 5);">WhatsApp</button>
-          <button class="btn" id="shareTelegram" style="color: rgb(2, 224, 244);">Telegram</button>
-          <button class="btn" id="shareFacebook" style="color: rgb(5, 94, 237);">Facebook</button>
+          <button class="btn fade-in" id="shareWhatsapp" style="color: rgb(82, 237, 5);">WhatsApp</button>
+          <button class="btn fade-in" id="shareTelegram" style="color: rgb(2, 224, 244);">Telegram</button>
+          <button class="btn fade-in" id="shareFacebook" style="color: rgb(5, 94, 237);">Facebook</button>
         </div>
         <div id="qrSection" style="margin-top:12px; display:none; text-align:center;">
           <h3>Your QR Code</h3>
           <div id="qrcode" style="padding:10px; background:#fff; border-radius:12px; display:inline-block;"></div>
           <br><br>
-          <button id="downloadQR" class="btn">Download QR</button>
+          <button id="downloadQR" class="btn fade-in">Download QR</button>
         </div>
 
 
@@ -112,7 +112,7 @@
     </section>
   </main>
 
-  <section class="card" id="leaderboard-card">
+  <section class="card slide-up" id="leaderboard-card" slide-up>
     <h3>🏆 Global Leaderboard</h3>
     <ul id="leaderboard-list" style="list-style:none; padding:0; margin:10px 0 0 0;"></ul>
     <div id="your-rank"></div>
