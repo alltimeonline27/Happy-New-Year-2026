@@ -1,177 +1,168 @@
-// === Firebase Config (REPLACE with your values) ===
+// Firebase (Compat) Initialization
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAHKe9YThgj5WSxNsaq4Rq8Fh32uktUd0b",
+  authDomain: "happy-new-year-2026-7eac0.firebaseapp.com",
+  projectId: "happy-new-year-2026-7eac0",
+  storageBucket: "happy-new-year-2026-7eac0.appspot.com",
+  messagingSenderId: "689012388330",
+  appId: "1:689012388330:web:0dd468b6e6ce2c2f322d383",
+  measurementId: "G-KSZT2QEJP8"
 };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const storage = firebase.storage();
 
-// DOM
-const createForm = document.getElementById("createForm");
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+// Cloudinary Settings
+const CLOUD_NAME = "dfczitdpf";
+const UPLOAD_PRESET = "newyear2026"; // Ensure this is "Unsigned" in Cloudinary settings
+
+// DOM Elements
 const senderNameInput = document.getElementById("senderName");
 const friendNameInput = document.getElementById("friendName");
-const friendPhotoInput = document.getElementById("friendPhoto");
-const customMessageInput = document.getElementById("customMessage");
-const createResult = document.getElementById("createResult");
-const shareLinkInput = document.getElementById("shareLinkInput");
+const messageInput = document.getElementById("customMessage");
+const photoInput = document.getElementById("photo");
+const generateBtn = document.getElementById("generateBtn");
+const statusEl = document.getElementById("status");
+const linkResultBlock = document.getElementById("linkResult");
+const resultLinkEl = document.getElementById("resultLink");
 const copyLinkBtn = document.getElementById("copyLinkBtn");
-const whatsappShareBtn = document.getElementById("whatsappShareBtn");
-const bgCanvas = document.getElementById("bgCanvas");
+const openLinkBtn = document.getElementById("openLinkBtn");
 
-let friendPhotoFile = null;
-
-// Auto-fill your name from ?sender= (previous receiver)
+// Prefill sender if coming from friend's share (?sender=...)
 (function prefillSender() {
-    const p = new URLSearchParams(window.location.search);
-    const s = p.get("sender");
-    if (s) senderNameInput.value = s;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const s = params.get("sender");
+    if (s && senderNameInput) senderNameInput.value = s;
+  } catch (e) {
+    console.warn("Could not prefill sender:", e);
+  }
 })();
 
-// File handler (optional photo)
-if (friendPhotoInput) {
-    friendPhotoInput.addEventListener("change", (e) => {
-        const file = e.target.files && e.target.files[0];
-        friendPhotoFile = file || null;
+// Helpers
+async function uploadImageToCloudinary(file) {
+  if (!file) return null;
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+    method: "POST",
+    body: formData
+  });
+
+  if (!res.ok) {
+    console.error("Cloudinary upload failed.");
+    throw new Error("Image upload failed");
+  }
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
+// Fetch Geo Info with a Timeout so the app doesn't freeze
+async function getGeoInfo() {
+  const fetchGeo = fetch("https://ipapi.co/json/");
+  const timeout = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error("Timeout")), 2000)
+  );
+
+  try {
+    const res = await Promise.race([fetchGeo, timeout]);
+    if (!res.ok) return {};
+    const data = await res.json();
+    return {
+      ip: data.ip || "",
+      country: data.country_name || "",
+      countryCode: data.country || "",
+      region: data.region || "",
+      city: data.city || ""
+    };
+  } catch (err) {
+    console.warn("Geo lookup skipped:", err);
+    return {}; // Return empty object on failure/timeout
+  }
+}
+
+function getBaseUrl() {
+  // Return origin + folder path ensuring trailing slash
+  const origin = window.location.origin;
+  const path = window.location.pathname;
+  const folder = path.replace(/[^/]*$/, '');
+  return `${origin}${folder}`;
+}
+
+// Main Handler
+async function handleGenerateClick() {
+  const senderName = senderNameInput ? senderNameInput.value.trim() : "";
+  const receiverName = friendNameInput ? friendNameInput.value.trim() : "";
+  const customMsg = messageInput ? messageInput.value.trim() : "";
+  const file = photoInput && photoInput.files ? photoInput.files[0] : null;
+
+  if (!senderName || !receiverName) {
+    alert("Please enter both your name and your friend’s name.");
+    return;
+  }
+
+  generateBtn.disabled = true;
+  linkResultBlock.style.display = "none";
+  statusEl.textContent = "Creating your New Year gift… Please wait.";
+
+  try {
+    let photoUrl = null;
+    if (file) {
+      statusEl.textContent = "Uploading photo…";
+      photoUrl = await uploadImageToCloudinary(file);
+    }
+
+    statusEl.textContent = "Finalizing gift…";
+    const geo = await getGeoInfo();
+
+    const docRef = await db.collection("celebrations").add({
+      senderName,
+      receiverName,
+      customMessage: customMsg,
+      photoUrl: photoUrl || null,
+      views: 0,
+      shares: 0,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      lastOpened: firebase.firestore.FieldValue.serverTimestamp(),
+      device: navigator.platform || "",
+      ip: geo.ip || "",
+      country: geo.country || "",
+      city: geo.city || ""
     });
+
+    const baseUrl = getBaseUrl();
+    const cleanBase = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
+    const celebrationUrl = `${cleanBase}celebrate.html?id=${encodeURIComponent(docRef.id)}`;
+
+    resultLinkEl.innerHTML = `<a href="${celebrationUrl}" target="_blank">${celebrationUrl}</a>`;
+    linkResultBlock.style.display = "block";
+    statusEl.textContent = "Link generated successfully! Share it with your friend.";
+
+    // Enable copy/open buttons
+    if (copyLinkBtn) copyLinkBtn.onclick = () => {
+      navigator.clipboard.writeText(celebrationUrl).then(() => {
+        statusEl.textContent = 'Link copied to clipboard.';
+      }).catch(() => {
+        alert('Copy failed. Please copy manually.');
+      });
+    };
+
+    if (openLinkBtn) openLinkBtn.onclick = () => window.open(celebrationUrl, '_blank');
+
+  } catch (err) {
+    console.error("Error creating gift:", err);
+    statusEl.textContent = "Error creating link. Please try again.";
+    alert("Something went wrong. Please check your internet connection.");
+  } finally {
+    generateBtn.disabled = false;
+  }
 }
 
-// Soft animated background
-if (bgCanvas) {
-    const ctx = bgCanvas.getContext("2d");
-    function resize() {
-        bgCanvas.width = window.innerWidth;
-        bgCanvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resize);
-    resize();
-
-    const sparks = [];
-    function spawnSpark() {
-        const w = bgCanvas.width;
-        const h = bgCanvas.height;
-        const x = Math.random() * w;
-        const y = Math.random() * h * 0.5;
-        const color = `hsl(${Math.random() * 360}, 80%, 60%)`;
-        for (let i = 0; i < 22; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 3 + 1;
-            sparks.push({
-                x,
-                y,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                life: 1,
-                color
-            });
-        }
-    }
-
-    function loop() {
-        ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        for (let i = sparks.length - 1; i >= 0; i--) {
-            const s = sparks[i];
-            s.x += s.vx;
-            s.y += s.vy;
-            s.vy += 0.04;
-            s.life -= 0.015;
-            if (s.life <= 0) {
-                sparks.splice(i, 1);
-                continue;
-            }
-            ctx.globalAlpha = s.life;
-            ctx.fillStyle = s.color;
-            ctx.beginPath();
-            ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        requestAnimationFrame(loop);
-    }
-
-    setInterval(spawnSpark, 1200);
-    loop();
-}
-
-// Handle form submit: create doc + link
-createForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const senderName = senderNameInput.value.trim();
-    const friendName = friendNameInput.value.trim();
-    const customMessage = customMessageInput.value.trim();
-
-    if (!senderName || !friendName) return;
-
-    createForm.querySelector("button[type='submit']").disabled = true;
-
-    try {
-        const docRef = db.collection("celebrations").doc();
-        const docId = docRef.id;
-
-        let photoUrl = null;
-        if (friendPhotoFile) {
-            const storageRef = storage.ref().child(`celebration-photos/${docId}`);
-            await storageRef.put(friendPhotoFile);
-            photoUrl = await storageRef.getDownloadURL();
-        }
-
-        await docRef.set({
-            senderName,
-            receiverName: friendName,
-            photoUrl: photoUrl,
-            customMessage: customMessage || null,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        // Build link (works on local Live Server and deploy)
-        const currentPath = window.location.pathname;
-        const basePath = currentPath.replace(/create\.html.*$/i, "");
-        const link = `${window.location.origin}${basePath}celebrate.html?id=${docId}`;
-
-        shareLinkInput.value = link;
-        createResult.style.display = "block";
-
-        // log create event (optional analytics)
-        await db.collection("events").add({
-            type: "create",
-            celebrationId: docId,
-            senderName,
-            receiverName: friendName,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    } catch (err) {
-        console.error("Error creating celebration:", err);
-        alert("Error creating gift. Please try again.");
-    } finally {
-        createForm.querySelector("button[type='submit']").disabled = false;
-    }
-});
-
-// Copy link
-copyLinkBtn.addEventListener("click", async () => {
-    const link = shareLinkInput.value;
-    if (!link) return;
-    try {
-        await navigator.clipboard.writeText(link);
-        alert("Link copied to clipboard");
-    } catch {
-        window.prompt("Copy this link:", link);
-    }
-});
-
-// WhatsApp share
-whatsappShareBtn.addEventListener("click", () => {
-    const link = shareLinkInput.value;
-    if (!link) return;
-    const text = encodeURIComponent("Your New Year 2026 gift is ready! Open it: " + link);
-    window.open("https://wa.me/?text=" + text, "_blank");
-});
-
-// (Optional) register service worker
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js").catch(() => {});
+if (generateBtn) {
+  generateBtn.addEventListener("click", handleGenerateClick);
 }

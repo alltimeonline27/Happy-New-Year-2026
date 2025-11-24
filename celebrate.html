@@ -1,102 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Your New Year 2026 Gift</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a0530">
-
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
-
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <title>Your New Year 2026 Gift</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a0530" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="celebrate-body">
-    <!-- Loader -->
-    <div id="loader" class="loader-overlay">
-        <div class="loader-inner">
-            <div class="loader-ring"></div>
-            <div class="loader-text">Loading your New Year gift…</div>
-        </div>
+  <div id="loader" class="loader-overlay">
+    <div class="loader-inner">
+      <div class="loader-ring"></div>
+      <div class="loader-text">Loading your New Year gift…</div>
     </div>
+  </div>
 
-    <!-- Background -->
-    <canvas id="celebrateCanvas"></canvas>
-    <div id="particles-js"></div>
-    <div class="overlay"></div>
-    <div class="skyline"></div>
+  <canvas id="celebrateCanvas"></canvas>
+  <div class="overlay"></div>
 
-    <header class="top-bar">
-        <div class="logo-text" data-i18n="brand">Happy New Year 2026</div>
+  <header class="top-bar">
+    <div class="logo-text" id="brandTitle">HAPPY NEW YEAR 2026</div>
+    <a href="create.html" class="top-link">Create Your Own</a>
+  </header>
 
-        <!-- Language selector -->
-        <div class="lang-switch">
-            <label for="langSelect">🌐</label>
-            <select id="langSelect">
-                <option value="en">EN</option>
-                <option value="hi">हिन्दी</option>
-                <option value="bn">বাংলা</option>
-            </select>
+  <main class="container one-column">
+    <section class="card celebration-card">
+      <div class="celebration-content">
+        <h2 id="headline" class="neon-title">Happy New Year 2026!</h2>
+        <h3 id="senderLine" class="neon-subtitle"></h3>
+
+        <div class="gift-wrapper">
+          <div class="gift-box" id="giftBox">
+            <div class="gift-lid"></div>
+            <div class="gift-body"></div>
+            <div class="gift-ribbon-vertical"></div>
+            <div class="gift-ribbon-horizontal"></div>
+            <span class="gift-text" id="giftText">Tap to Open</span>
+          </div>
         </div>
-    </header>
 
-    <main class="container one-column">
-        <section class="card celebration-card">
-            <div class="celebration-content">
-                <h2 id="headline" class="neon-title"></h2>
-                <h3 id="senderLine" class="neon-subtitle"></h3>
+        <div class="balloon-area" id="balloonArea"></div>
 
-                <!-- Appears AFTER gift opens -->
-                <div id="revealBlock" class="reveal-block" style="opacity:0; pointer-events:none;">
-                    <div class="photo-badge-wrapper">
-                        <div class="photo-circle" id="photoCircle">
-                            <img id="friendPhotoDisplay" alt="Friend Photo" />
-                            <div class="photo-fallback" id="photoFallback">🎉</div>
-                        </div>
-                    </div>
-                    <h3 id="receiverNameTitle" class="receiver-name"></h3>
-                    <p id="wishText" class="wish-text"></p>
-                </div>
-
-                <div class="balloon-area" id="balloonArea"></div>
-
-                <!-- Gift box -->
-                <div class="gift-wrapper">
-                    <div class="gift-box" id="giftBox">
-                        <div class="gift-lid"></div>
-                        <div class="gift-body"></div>
-                        <div class="gift-ribbon-vertical"></div>
-                        <div class="gift-ribbon-horizontal"></div>
-                        <span class="gift-text" id="giftText">Open Your Gift</span>
-                    </div>
-                </div>
-
-                <!-- Appears after reveal -->
-                <div class="after-gift-actions" id="afterGiftActions" style="opacity:0; pointer-events:none;">
-                    <button class="btn primary" id="shareForwardBtn">
-                        🎁 Send a Gift to Your Friend
-                    </button>
-                </div>
+        <div id="revealBlock" class="reveal-block" style="opacity:0; pointer-events:none; transform: translateY(20px);">
+          <div class="photo-badge-wrapper">
+            <div class="photo-circle" id="photoCircle">
+              <img id="friendPhotoDisplay" alt="Friend Photo" style="display:none;" />
+              <div class="photo-fallback" id="photoFallback" style="display:none;">🎉</div>
             </div>
-        </section>
-    </main>
+          </div>
+          <h3 id="receiverNameTitle" class="receiver-name"></h3>
+          <p id="wishText" class="wish-text"></p>
+        </div>
 
-    <!-- Countdown overlay -->
-    <div id="countdownOverlay" class="countdown-overlay" style="display:none;"></div>
+        <div class="after-gift-actions" id="afterGiftActions" style="opacity:0; pointer-events:none;">
+          <button class="btn primary" id="shareForwardBtn">
+            🎁 Create a Gift for Someone Else
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
 
-    <!-- Music -->
-    <audio id="bgMusic" src="assets/newyear2026.mp3" loop></audio>
+  <div id="countdownOverlay" class="countdown-overlay" style="display:none;"></div>
 
-    <!-- Local GSAP + particles -->
-    <script src="libs/gsap.min.js"></script>
-    <script src="libs/particles.min.js"></script>
+  <audio id="bgMusic" src="assets/newyear2026.mp3" loop></audio>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-    <script src="celebrate.js"></script>
+  <script src="celebrate.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js').catch(e => console.warn('SW register failed', e));
+    }
+  </script>
 </body>
 </html>

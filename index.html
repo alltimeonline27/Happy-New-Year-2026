@@ -1,11 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0; url=./celebrate.html" />
+  <meta charset="UTF-8" />
+  <title>Happy New Year 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="0; url=./celebrate.html" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a0530" />
+  <link rel="icon" href="icons/icon-32.png" />
+  <style>
+    body {
+      margin: 0;
+      background: #050016;
+      color: #fff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
-    Redirecting to celebration...
+  Redirecting to celebration…
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js').catch(e => console.warn('SW register failed', e));
+    }
+  </script>
 </body>
 </html>

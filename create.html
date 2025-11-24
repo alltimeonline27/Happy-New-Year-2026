@@ -1,78 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create New Year Gift | 2026</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0a0530">
-
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
-
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <title>Create New Year 2026 Gift</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a0530" />
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-    <canvas id="bgCanvas"></canvas>
-    <div class="overlay"></div>
+<body class="create-body">
+  <header class="top-bar">
+    <div class="logo-text">Create Your New Year 2026 Gift</div>
+    <a href="celebrate.html" class="top-link">Have a Code?</a>
+  </header>
 
-    <header class="top-bar">
-        <div class="logo-text">
-            Happy New Year 2026
+  <main class="container two-column">
+    <section class="card create-card">
+      <h1>Create a Celebration Link</h1>
+      <p class="helper-text">
+        Fill this form and send a magical Happy New Year 2026 celebration link to your friend.
+      </p>
+
+      <div class="form-group">
+        <label for="senderName">Your Name</label>
+        <input type="text" id="senderName" placeholder="e.g., Bhaskar" autocomplete="name" />
+      </div>
+
+      <div class="form-group">
+        <label for="friendName">Friend’s Name</label>
+        <input type="text" id="friendName" placeholder="e.g., Dip" />
+      </div>
+
+      <div class="form-group">
+        <label for="customMessage">Optional Custom Wish</label>
+        <textarea id="customMessage" rows="3" placeholder="Write a special New Year message..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="photo">Friend’s Photo (optional)</label>
+        <input type="file" id="photo" accept="image/*" />
+        <small style="color:#888;">Photo is optional. If skipped, a festive emoji will appear instead.</small>
+      </div>
+
+      <button id="generateBtn" class="btn primary full-width">
+        🎁 Generate Celebration Link
+      </button>
+
+      <div id="status" class="status-text"></div>
+
+      <div id="linkResult" class="result-block" style="display: none;">
+        <h3>Your Shareable Link</h3>
+        <p>Copy and send this to your friend:</p>
+        <p id="resultLink" class="link-display"></p>
+        <div style="margin-top:8px; display:flex; gap:8px;">
+          <button id="copyLinkBtn" class="btn">Copy Link</button>
+          <button id="openLinkBtn" class="btn">Open Link</button>
         </div>
-    </header>
+      </div>
+    </section>
 
-    <main class="container one-column">
-        <section class="card form-card">
-            <h1>Create a New Year Gift</h1>
-            <p class="muted">
-                Your friend will see their name, optional photo, fireworks, music and a surprise gift box.
-            </p>
+    <section class="card info-card">
+      <h2>How it Works</h2>
+      <ol class="info-list" style="margin-left: 20px; line-height: 1.6; color: #ddd;">
+        <li>Enter your name, your friend’s name, and an optional wish.</li>
+        <li>Optionally upload your friend’s photo.</li>
+        <li>Click “Generate Celebration Link”.</li>
+        <li>Share the link via WhatsApp or Instagram.</li>
+        <li>When your friend opens it, they see a gift box. On opening → full celebration!</li>
+      </ol>
+    </section>
+  </main>
 
-            <form id="createForm">
-                <div class="form-group">
-                    <label for="senderName">Your Name</label>
-                    <input type="text" id="senderName" placeholder="e.g. Bhaskar" required>
-                    <small class="muted">You will be shown as the person who sent the gift.</small>
-                </div>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="create.js"></script>
 
-                <div class="form-group">
-                    <label for="friendName">Friend's Name</label>
-                    <input type="text" id="friendName" placeholder="e.g. Suriya" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="friendPhoto">Friend's Photo (optional)</label>
-                    <input type="file" id="friendPhoto" accept="image/*">
-                    <small class="muted">If you don't upload, celebration will still run with default visuals.</small>
-                </div>
-
-                <div class="form-group">
-                    <label for="customMessage">Custom Message (optional)</label>
-                    <textarea id="customMessage" rows="4" placeholder="Write a special message..."></textarea>
-                    <small class="muted">This message will appear with your signature in the celebration.</small>
-                </div>
-
-                <button type="submit" class="btn primary">🎉 Generate Celebration Link</button>
-            </form>
-
-            <div id="createResult" class="result-box" style="display:none;">
-                <h3>Gift created! Share this link:</h3>
-                <input type="text" id="shareLinkInput" readonly>
-                <div class="share-section">
-                    <button class="btn secondary" id="copyLinkBtn">📋 Copy link</button>
-                    <button class="btn ghost" id="whatsappShareBtn">WhatsApp</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
-
-    <script src="create.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js').catch(e => console.warn('SW register failed', e));
+    }
+  </script>
 </body>
 </html>
