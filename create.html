@@ -97,5 +97,37 @@ document.addEventListener("keydown", (e) => {
 });
 </script>
 
+<script>
+// ===========================
+// LONG PRESS ADMIN ACCESS
+// ===========================
+let pressTimer = null;
+
+function startPress(event) {
+    pressTimer = setTimeout(() => {
+        window.location.href = "admin.html";
+    }, 4000); // 4 seconds
+}
+
+function endPress() {
+    clearTimeout(pressTimer);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const logo = document.querySelector(".logo-text");
+    if (!logo) return;
+
+    // Mobile touch
+    logo.addEventListener("touchstart", startPress);
+    logo.addEventListener("touchend", endPress);
+
+    // Desktop mouse
+    logo.addEventListener("mousedown", startPress);
+    logo.addEventListener("mouseup", endPress);
+    logo.addEventListener("mouseleave", endPress);
+});
+</script>
+
+
 </body>
 </html>
