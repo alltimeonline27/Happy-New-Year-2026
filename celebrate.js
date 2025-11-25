@@ -474,3 +474,43 @@ if (soundToggle && bgMusic) {
     }
   });
 }
+/* =========================================
+      SIMPLE REACTION SYSTEM (ONLY)
+========================================= */
+
+// Reaction document
+const reactionDoc = db.collection("reactions").doc("totalReactions");
+
+// Create document if it does not exist
+reactionDoc.get().then(doc => {
+  if (!doc.exists) {
+    reactionDoc.set({
+      heart: 0,
+      laugh: 0,
+      wow: 0,
+      party: 0
+    });
+  }
+});
+
+// Handle button clicks
+document.querySelectorAll(".react-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.type;
+    reactionDoc.update({
+      [type]: firebase.firestore.FieldValue.increment(1)
+    });
+  });
+});
+
+// Live update reaction counts
+const countsEl = document.getElementById("reaction-counts");
+reactionDoc.onSnapshot(doc => {
+  const d = doc.data() || {};
+  countsEl.innerHTML = `
+    ❤️ ${d.heart || 0} &nbsp;&nbsp;
+    😂 ${d.laugh || 0} &nbsp;&nbsp;
+    😮 ${d.wow || 0} &nbsp;&nbsp;
+    🎉 ${d.party || 0}
+  `;
+});

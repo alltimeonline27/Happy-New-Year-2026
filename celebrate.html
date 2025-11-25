@@ -25,7 +25,12 @@
   <div class="overlay"></div>
 
   <header class="top-bar fade-in" fade-in>
-    <div class="logo-text" id="brandTitle" >NY2026</div>
+    <div class="nav-left">
+    <img src="icons/logo.png" alt="Site Logo" class="site-logo">
+
+    <!-- <div class="logo-text" id="brandTitle" >NY2026</div> -->
+    </div>
+    
     <button id="soundToggle" class="sound-btn" style="background-color: rgb(234, 255, 0); color: black;">🔊 Sound On</button>
     <button id="themeToggle" class="theme-btn">☀️</button>
 
@@ -69,6 +74,20 @@
         </div>
       </div>
     </section>
+    <!-- === REACTION SYSTEM === -->
+<section class="card" style="margin-top:20px;">
+  <h3>React to this Gift</h3>
+
+  <div id="reaction-buttons" style="margin-top:10px;">
+    <button class="react-btn" data-type="heart">❤️</button>
+    <button class="react-btn" data-type="laugh">😂</button>
+    <button class="react-btn" data-type="wow">😮</button>
+    <button class="react-btn" data-type="party">🎉</button>
+  </div>
+
+  <div id="reaction-counts" style="margin-top:12px; font-size:1.1rem; font-weight:700;"></div>
+</section>
+
   </main>
 
   <section class="card slide-up" id="leaderboard-card" slide-up>
