@@ -3,7 +3,7 @@
 // ===============================
 
 // Change this version every time you update your website
-const CACHE_NAME = "ny2026-v9";
+const CACHE_NAME = "ny2026-v10";
 
 // List of files to cache
 const ASSETS = [
