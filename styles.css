@@ -681,3 +681,24 @@ small {
   margin-right: auto;
   
 }
+/* Highlight selected category button */
+.active-cat {
+  background: #ffd14b !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+}
+#popupWishList button {
+  background: #f8e89c !important;
+  color: #000 !important;
+  padding: 12px !important;
+  border-radius: 8px;
+}
+
+#popupWishList button:hover {
+  background: #ffe066 !important;
+}
+.active-cat {
+  background: #ffd84d !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+}

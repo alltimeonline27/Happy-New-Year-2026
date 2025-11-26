@@ -14,14 +14,16 @@
 </head>
 
 <body class="create-body">
-  <header class="top-bar fade-in" fade-in>
+<header class="top-bar fade-in">
+
     <div class="logo-text" style="display: flex;justify-content: space-between;align-items: flex-start;width: 100%;">Create Your NY2026 Gift</div>
     <button id="themeToggle" class="theme-btn">☀️</button>
 
     <a href="celebrate.html" class="top-link">Have a Gift?</a>
   </header>
 
-  <main class="container two-column fade-in" fade-in>
+  <main class="container two-column fade-in">
+
     <section class="card create-card">
       <h1>Create a Celebration Link</h1>
       <p class="helper-text">
@@ -42,6 +44,39 @@
         <label for="customMessage">Optional Custom Wish</label>
         <textarea id="customMessage" rows="3" placeholder="Write a special New Year message..."></textarea>
       </div>
+      <p>Generate AI Wish</p>
+      <!-- Language Selector -->
+<div style="margin-top:10px;">
+  <select id="wishLanguage" class="btn" style="width:100%; padding:10px;">
+    <option value="">Select Language</option>
+    <option value="en">English</option>
+    <option value="bn">Bengali</option>
+    <option value="hi">Hindi</option>
+  </select>
+</div>
+
+    <!-- Category Buttons -->
+<div id="wishCategories" style="margin-top:10px;">
+  <button class="btn" data-cat="love">❤️ Love</button>
+  <button class="btn" data-cat="friendship">🤝 Friendship</button>
+  <button class="btn" data-cat="family">👪 Family</button>
+  <button class="btn" data-cat="funny">😂 Funny</button>
+  <button class="btn" data-cat="emotional">💖 Emotional</button>
+  <button class="btn" data-cat="professional">💼 Professional</button>
+</div>
+
+<!-- Generate Multiple Wishes -->
+<div style="margin-top:10px;">
+  <button id="generateThreeBtn" class="btn" style="width:100%; margin-top:5px;">
+    ✨ Generate 3 Wishes
+  </button>
+
+  <button id="generateMixedBtn" class="btn" style="width:100%; margin-top:5px;">
+    🔀 Random Mixed-Language Wish
+  </button>
+</div>
+
+
 
       <div class="form-group">
         <label for="photo">Friend’s Photo (optional)</label>
@@ -69,11 +104,23 @@
 
 
 
-      <button id="generateBtn" class="btn primary full-width fade-in" fade-in>
+     <button id="generateBtn" class="btn primary full-width fade-in">
+
         🎁 Generate Celebration Link
       </button>
 
       <div id="status" class="status-text"></div>
+      <!-- AI Loader -->
+<div id="aiLoader" style="
+  display:none;
+  margin-top:10px;
+  font-size:16px;
+  color:#555;
+  font-weight:600;
+">
+  Generating<span id="aiDots">.</span>
+</div>
+
 
       <div id="linkResult" class="result-block" style="display: none;">
         <h3>Your Shareable Link</h3>
@@ -128,6 +175,35 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+   <!-- Popup Modal for Selecting Wishes -->
+<div id="wishPopup" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <div style="
+    background: #fff;
+    padding: 20px;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  ">
+    <h3 style="margin-bottom: 10px; text-align: center;">Select Your Wish</h3>
+
+    <div id="popupWishList"></div>
+
+    <button id="closePopup" class="btn" style="margin-top: 15px; width: 100%;">
+      Close
+    </button>
+  </div>
+</div>
+
   <script src="create.js"></script>
 
   <script>
@@ -181,6 +257,7 @@
       logo.addEventListener("mouseleave", endPress);
     });
   </script>
+ 
 
 </body>
 
