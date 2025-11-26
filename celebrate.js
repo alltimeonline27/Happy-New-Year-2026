@@ -371,6 +371,12 @@ window.addEventListener("DOMContentLoaded", () => {
     .forEach((el, index) => {
       el.style.animationDelay = (index * 0.05) + "s";
     });
+    // Set OG URL dynamically (for correct share previews)
+const ogUrl = document.getElementById("ogUrlTag");
+if (ogUrl) {
+  ogUrl.setAttribute("content", window.location.href);
+}
+
 });
 
 
