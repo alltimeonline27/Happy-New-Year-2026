@@ -76,30 +76,81 @@ function stopDotsAnimation() {
   clearInterval(loaderInterval);
 }
 
+let thinkInterval = null;
+
+function startThinking() {
+  const think = document.getElementById("aiThinking");
+  const dots = document.getElementById("thinkDots");
+  let count = 0;
+  think.style.display = "block";
+
+  thinkInterval = setInterval(() => {
+    count = (count + 1) % 4;
+    dots.textContent = ".".repeat(count);
+  }, 300);
+}
+
+function stopThinking() {
+  const think = document.getElementById("aiThinking");
+  think.style.display = "none";
+  clearInterval(thinkInterval);
+}
+function playTypingSound() {
+  const snd = document.getElementById("typeSound");
+  snd.volume = 0.4;
+  snd.loop = true;
+snd.play().catch(() => {});
+
+}
+
+function stopTypingSound() {
+  const snd = document.getElementById("typeSound");
+  snd.pause();
+  snd.currentTime = 0;
+}
+
+
 // Typewriter animation
 function typewriterEffect(text) {
-  messageInput.value = "";
+  const bubble = document.getElementById("aiBubble");
+  const cursor = document.getElementById("typingCursor");
+
+  bubble.style.display = "block";
+  bubble.textContent = "";
+  cursor.style.display = "inline-block";
+
   let i = 0;
 
   const typing = setInterval(() => {
-    messageInput.value += text[i];
+    bubble.textContent += text[i];
     i++;
 
     if (i >= text.length) {
       clearInterval(typing);
+      cursor.style.display = "none";
+      stopTypingSound();
+
+      // COPY final AI text to textarea
+      messageInput.value = text;
     }
-  }, 30);
+  }, 35);
+
+  playTypingSound();
 }
+
 
 // Combined animation: loader → typewriter
 function animateAIGeneration(finalText) {
-  startDotsAnimation();
+  startDotsAnimation();     // dots under message box
+  startThinking();          // “AI is thinking…” ON
 
   setTimeout(() => {
-    stopDotsAnimation();
-    typewriterEffect(finalText);
+    stopDotsAnimation();    // stop dots
+    stopThinking();         // stop “AI is thinking…”
+    typewriterEffect(finalText);  // begin typing bubble
   }, 1000);
 }
+
 
 // ================= AI WISH GENERATOR (CATEGORY + LANGUAGE) ================= //
 const aiWishCategories = {
@@ -759,74 +810,57 @@ if (generateThreeBtn) {
         selected.push(replaceWish(list[i], sender, receiver));
       }
     }
+// Build Popup Wish List Buttons (ChatGPT-style animation)
+startThinking();
+stopThinking();
 
-    // Build Popup Wish List Buttons
-    popupWishList.innerHTML = "";
+popupWishList.innerHTML = "";
 
-    selected.forEach((wishText, index) => {
-      const btn = document.createElement("button");
-      btn.className = "btn";
-      btn.style = "width:100%; margin-bottom:10px; text-align:left; white-space:normal;";
-      btn.innerHTML = `<strong>Wish ${index + 1}:</strong><br>${wishText}`;
+selected.forEach((wishText, index) => {
+  const btn = document.createElement("button");
+  btn.className = "btn ai-wish";
+  btn.style = "width:100%; margin-bottom:10px; text-align:left; white-space:normal;";
+  btn.innerHTML = `<strong>Wish ${index + 1}:</strong><br>${wishText}`;
 
-      btn.addEventListener("click", () => {
-         wishPopup.style.display = "none";
-     animateAIGeneration(wishText);
+  // Select Wish
+  btn.addEventListener("click", () => {
+    document.getElementById("wishPopupInner").classList.remove("ai-popup-show");
+    setTimeout(() => {
+      wishPopup.style.display = "none";
+    }, 200);
 
+    animateAIGeneration(wishText);
+  });
 
-       
-      });
+  popupWishList.appendChild(btn);
 
-      popupWishList.appendChild(btn);
-    });
+  // ChatGPT-style staggered reveal
+  setTimeout(() => {
+    btn.classList.add("ai-wish-show");
+  }, 200 * (index + 1));
+});
 
     // POPUP SHOW FIX
-    wishPopup.style.display = "flex";
+   wishPopup.style.display = "flex";
+setTimeout(() => {
+  document.getElementById("wishPopupInner").classList.add("ai-popup-show");
+}, 10);
+
   });
 }
 
 // Close Popup
 if (closePopup) {
-  closePopup.addEventListener("click", () => {
+closePopup.addEventListener("click", () => {
+  document.getElementById("wishPopupInner").classList.remove("ai-popup-show");
+  setTimeout(() => {
     wishPopup.style.display = "none";
-  });
+  }, 200);
+});
+
 }
 
-// ========== RANDOM MIXED-LANGUAGE MODE ==========
-const generateMixedBtn = document.getElementById("generateMixedBtn");
-if (generateMixedBtn) {
-  generateMixedBtn.addEventListener("click", () => {
 
-    const category = document.querySelector("#wishCategories .active-cat")?.getAttribute("data-cat");
-
-    if (!category) {
-      statusEl.textContent = "Please select a category first.";
-      
-
-      return;
-    }
-
-    const sender = senderNameInput.value.trim() || "Someone";
-    const receiver = friendNameInput.value.trim() || "Friend";
-
-    // Choose random language
-    const langs = ["en", "bn", "hi"];
-    const randomLang = langs[Math.floor(Math.random() * langs.length)];
-
-    // Pick random wish from that language
-    const list = aiWishCategories[randomLang][category];
-    const wish = replaceWish(
-      list[Math.floor(Math.random() * list.length)],
-      sender,
-      receiver
-    );
-
-    animateAIGeneration(wish);
-
-    statusEl.textContent =
-      "Random Mixed-Language Wish (" + randomLang.toUpperCase() + ")";
-  });
-}
 
 
 

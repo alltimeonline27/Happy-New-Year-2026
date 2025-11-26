@@ -702,3 +702,40 @@ small {
   color: #000 !important;
   border: 1px solid #000 !important;
 }
+/* AI Popup Animation */
+.ai-popup {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.ai-popup-show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.ai-wish {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.ai-wish-show {
+  opacity: 1 !important;
+  transform: translateY(0px);
+}
+/* Blinking typing cursor */
+#typingCursor {
+  display:inline-block;
+  width:6px;
+  height:18px;
+  background:#000;
+  margin-left:4px;
+  animation: blinkCursor .7s infinite;
+}
+
+@keyframes blinkCursor {
+  0% { opacity:1; }
+  50% { opacity:0; }
+  100% { opacity:1; }
+}
