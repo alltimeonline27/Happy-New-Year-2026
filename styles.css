@@ -985,3 +985,43 @@ small {
     margin-right: 6px;
   }
 }
+
+/* Animated Gradient Border */
+.gradient-border {
+  border: 3px solid transparent;
+  border-radius: 16px;
+  background: linear-gradient(#ff7a18, #ffb347) padding-box,
+    linear-gradient(120deg, #ff9a00, #ff3d00, #ff00a0, #00c6ff, #00ff85) border-box;
+  background-size: 300% 300%;
+  animation: borderMove 4s linear infinite;
+}
+
+@keyframes borderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Neon Glowing Hover */
+.gradient-border:hover {
+  box-shadow: 0 0 20px rgba(255, 118, 20, 0.9),
+    0 0 40px rgba(255, 0, 128, 0.7),
+    0 0 60px rgba(255, 200, 0, 0.6);
+  transform: translateY(-3px);
+  transition: 0.25s ease-in-out;
+}
+
+.firework-canvas {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}

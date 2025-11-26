@@ -1766,17 +1766,6 @@ if (themeToggle) {
     }
   });
 }
-// Auto-apply fade-in animations
-window.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".fade-in, .slide-up, .fade-scale")
-    .forEach((el, index) => {
-      el.style.animationDelay = (index * 0.05) + "s";
-    });
-});
-
-
-// CALL INIT (Very Important — must run AFTER everything)
-window.addEventListener("DOMContentLoaded", initTheme);
 
 // Ripple Click Effect for Main Button
 document.addEventListener("DOMContentLoaded", () => {
@@ -1794,3 +1783,77 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => ripple.remove(), 600);
   });
 });
+// -------------------------------
+// FIREWORK PARTICLES ON BUTTON CLICK
+// -------------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("generateBtn");
+  const canvas = btn.querySelector(".firework-canvas");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas() {
+    canvas.width = btn.clientWidth;
+    canvas.height = btn.clientHeight;
+  }
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  const particles = [];
+
+  function createParticle(x, y) {
+    particles.push({
+      x,
+      y,
+      size: Math.random() * 4 + 2,
+      speedX: (Math.random() - 0.5) * 4,
+      speedY: (Math.random() - 0.5) * 4,
+      color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+      life: 30
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach((p, i) => {
+      p.x += p.speedX;
+      p.y += p.speedY;
+      p.life--;
+
+      ctx.globalAlpha = p.life / 30;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (p.life <= 0) particles.splice(i, 1);
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  // Trigger fireworks on main button click
+  btn.addEventListener("click", (e) => {
+    const rect = btn.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    for (let i = 0; i < 25; i++) {
+      createParticle(x, y);
+    }
+  });
+});
+
+// Auto-apply fade-in animations
+window.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".fade-in, .slide-up, .fade-scale")
+    .forEach((el, index) => {
+      el.style.animationDelay = (index * 0.05) + "s";
+    });
+});
+
+
+// CALL INIT (Very Important — must run AFTER everything)
+window.addEventListener("DOMContentLoaded", initTheme);
+
