@@ -173,6 +173,15 @@
       logo.addEventListener("mouseleave", endPress);
     });
   </script>
+<script>
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    window.deferredPrompt = e;
+
+    // Optional: Add a button UI later for “Install App”
+    console.log("PWA install available");
+  });
+</script>
 
 
 </body>

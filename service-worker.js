@@ -1,75 +1,72 @@
 // ===============================
-// HAPPY NEW YEAR 2026 — SERVICE WORKER (UPDATED)
+// NY 2026 — OPTIMIZED SERVICE WORKER
 // ===============================
 
-// Change this version every time you update your website
-const CACHE_NAME = "ny2026-v12";
+const CACHE_NAME = "ny2026-v20";
 
-// List of files to cache
+// Only cache GET static files
 const ASSETS = [
   "./",
   "./index.html",
-  "./create.html",
   "./celebrate.html",
-  "./styles.css",
-  "./create.js",
-  "./celebrate.js",
+  "./create.html",
   "./admin.html",
+
+  "./styles.css",
+  "./celebrate.js",
+  "./create.js",
   "./admin.js",
+
+  "./manifest.json",
   "./assets/newyear2026.mp3",
+
   "./icons/icon-32.png",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
 ];
 
-// Install event
+// Install — Precache static assets
 self.addEventListener("install", (event) => {
-  self.skipWaiting(); // Activate new version immediately
-
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
 });
 
-// Activate event
+// Activate — Delete old caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
+    caches.keys().then(keys =>
       Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key); // Delete old caches
-          }
-        })
+        keys.map(key => key !== CACHE_NAME && caches.delete(key))
       )
     )
   );
-  clients.claim(); // Take control of pages immediately
+  clients.claim();
 });
 
-// Fetch event (Network-first then cache fallback)
+// Fetch — Cache First for static, Network for API/POST
 self.addEventListener("fetch", (event) => {
+
+  // Skip POST/PUT/DELETE requests
+  if (event.request.method !== "GET") return;
+
+  const url = new URL(event.request.url);
+
+  // Don’t cache Firestore calls or external resources
+  if (url.origin !== location.origin) return;
+
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Clone and store in cache
-        const resClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, resClone);
-        });
-        return response;
-      })
-      .catch(() => {
-        // If offline → return cached version
-        return caches.match(event.request).then((cached) => {
-          // If HTML request fails → fallback to celebrate page
-          if (!cached && event.request.headers.get("accept")?.includes("text/html")) {
-            return caches.match("./celebrate.html");
-          }
-          return cached || new Response("", { status: 503 });
-        });
-      })
+    caches.match(event.request).then(cached => {
+      return (
+        cached ||
+        fetch(event.request)
+          .then(res => {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+            return res;
+          })
+      );
+    })
   );
 });
