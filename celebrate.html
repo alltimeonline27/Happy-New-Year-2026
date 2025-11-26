@@ -6,12 +6,12 @@
   <title>Your New Year 2026 Gift</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- ===== Custom OG Preview ===== -->
-<meta property="og:title" content="Happy New Year 2026 🎉" />
-<meta property="og:description" content="Someone sent you a special New Year gift! Open to reveal your surprise." />
-<meta property="og:image" content="https://happy-new-year-2026-seven.vercel.app/icons/og.png" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="" id="ogUrlTag" />
-<meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:title" content="Happy New Year 2026 🎉" />
+  <meta property="og:description" content="Someone sent you a special New Year gift! Open to reveal your surprise." />
+  <meta property="og:image" content="https://happy-new-year-2026-seven.vercel.app/icons/og.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" id="ogUrlTag" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0a0530" />
@@ -34,12 +34,13 @@
 
   <header class="top-bar fade-in" fade-in>
     <div class="nav-left">
-    <img src="icons/logo.png" alt="Site Logo" class="site-logo">
+      <img src="icons/logo.png" alt="Site Logo" class="site-logo">
 
-    <!-- <div class="logo-text" id="brandTitle" >NY2026</div> -->
+      <!-- <div class="logo-text" id="brandTitle" >NY2026</div> -->
     </div>
-    
-    <button id="soundToggle" class="sound-btn" style="background-color: rgb(234, 255, 0); color: black;">🔊 Sound On</button>
+
+    <button id="soundToggle" class="sound-btn" style="background-color: rgb(234, 255, 0); color: black;">🔊 Sound
+      On</button>
     <button id="themeToggle" class="theme-btn">☀️</button>
 
 
@@ -83,18 +84,18 @@
       </div>
     </section>
     <!-- === REACTION SYSTEM === -->
-<section class="card" style="margin-top:20px;">
-  <h3>React to this Gift</h3>
+    <section class="card" style="margin-top:20px;">
+      <h3>React to this Gift</h3>
 
-  <div id="reaction-buttons" style="margin-top:10px;">
-    <button class="react-btn" data-type="heart">❤️</button>
-    <button class="react-btn" data-type="laugh">😂</button>
-    <button class="react-btn" data-type="wow">😮</button>
-    <button class="react-btn" data-type="party">🎉</button>
-  </div>
+      <div id="reaction-buttons" style="margin-top:10px;">
+        <button class="react-btn" data-type="heart">❤️</button>
+        <button class="react-btn" data-type="laugh">😂</button>
+        <button class="react-btn" data-type="wow">😮</button>
+        <button class="react-btn" data-type="party">🎉</button>
+      </div>
 
-  <div id="reaction-counts" style="margin-top:12px; font-size:1.1rem; font-weight:700;"></div>
-</section>
+      <div id="reaction-counts" style="margin-top:12px; font-size:1.1rem; font-weight:700;"></div>
+    </section>
 
   </main>
 
@@ -173,15 +174,15 @@
       logo.addEventListener("mouseleave", endPress);
     });
   </script>
-<script>
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    window.deferredPrompt = e;
+  <script>
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
 
-    // Optional: Add a button UI later for “Install App”
-    console.log("PWA install available");
-  });
-</script>
+      // Optional: Add a button UI later for “Install App”
+      console.log("PWA install available");
+    });
+  </script>
 
 
 </body>

@@ -32,22 +32,22 @@
       </p>
 
       <div class="form-group">
-        <label for="senderName">Your Name</label>
+        <label for="senderName"><b>Your Name</b></label>
         <input type="text" id="senderName" placeholder="e.g., Bhaskar" autocomplete="name" />
       </div>
 
       <div class="form-group">
-        <label for="friendName">Friend’s Name</label>
+        <label for="friendName"><b>Friend’s Name</b></label>
         <input type="text" id="friendName" placeholder="e.g., Dip" />
       </div>
 
-         <div class="form-group">
-        <label for="photo">Friend’s Photo (optional)</label>
+      <div class="form-group">
+        <label for="photo"><b>Friend’s Photo (optional)</b></label>
         <input type="file" id="photo" accept="image/*" />
         <small style="color:#888;">Photo is optional. If skipped, a festive emoji will appear instead.</small>
       </div>
-
-            <label class="input-label">Choose Template</label>
+      <br>
+      <label class="input-label">Choose Template</label>
       <select id="templateSelect" class="input" style="color:rgb(2, 22, 244);">
         <option value="default">Default</option>
         <option value="love">Love Theme</option>
@@ -55,7 +55,7 @@
         <option value="family">Family Theme</option>
         <option value="professional">Professional Theme</option>
         <option value="neon">Neon Theme</option>
-      </select>
+      </select><br>
       <label class="input-label">Select Music</label>
       <select id="musicSelect" class="input" style="color:rgb(244, 2, 201);">
         <option value="default">Default Music</option>
@@ -64,9 +64,9 @@
         <option value="party">DJ Party Mix</option>
         <option value="none">No Music</option>
       </select>
-
+      <br><br>
       <div class="form-group">
-        <label for="customMessage">Optional Custom Wish Massage</label>
+        <label for="customMessage"><b>Optional Custom Wish Massage</b></label>
         <textarea id="customMessage" rows="3" placeholder="Write a special New Year message..."></textarea>
         <span id="typingCursor" style="display:none;"></span>
         <div id="aiBubble" style="
@@ -78,31 +78,31 @@
   margin-top:10px;
   border:1px solid #444;
 "></div>
-  <div id="aiThinking" style="
+        <div id="aiThinking" style="
   display:none;
   text-align:center;
   font-weight:600;
   margin-bottom:10px;
   font-size:16px;
 ">
-  AI is thinking<span id="thinkDots">.</span>
-</div>
+          AI is thinking<span id="thinkDots">.</span>
+        </div>
       </div>
       <p>OR,</p>
-      <p>Generate ✨AI Wish</p>
+      <p>Generate ✨AI Wish Massage :</p>
       <!-- Language Selector -->
       <div style="margin-top:10px;">
         <select id="wishLanguage" class="btn" style="width:100%; padding:10px;">
-          <option value="">Select Language</option>
+          <option value="">Select Wishing Language</option>
           <option value="en">English</option>
           <option value="bn">Bengali</option>
           <option value="hi">Hindi</option>
         </select>
       </div>
-    
+
 
       <!-- Category Buttons -->
-       <p>Choose Wish Category : </p>
+      <p>Choose Wish Category 👇 </p>
       <div id="wishCategories" style="margin-top:10px;">
         <button class="btn" data-cat="love">❤️ Love</button>
         <button class="btn" data-cat="friendship">🤝 Friendship</button>
@@ -114,16 +114,19 @@
 
       <!-- Generate Multiple Wishes -->
       <div style="margin-top:10px;">
-        <button id="generateThreeBtn" class="btn" style="width:100%; margin-top:5px;">
-          ✨ Generate 3 Wishes
+        <button id="generateThreeBtn" class="btn secondary-ai" style="width:100%; margin-top:5px;">
+          🤖 Generate 3 AI Wishes
         </button>
 
+
       </div>
-
-      <button id="generateBtn" class="btn primary full-width fade-in">
-
-        🎁 Generate Celebration Link
+      <br>
+      <button id="generateBtn" class="btn primary final-action pulse-btn"
+        style="width:100%; margin-top:12px; position:relative; overflow:hidden;">
+        <span class="gift-emoji">🎁</span>
+        Generate Celebration Link
       </button>
+
 
       <div id="status" class="status-text"></div>
       <!-- AI Loader -->
@@ -163,19 +166,74 @@
       </div>
     </section>
 
-    <section class="card info-card">
-      <h2>How it Works</h2>
-      <ol class="info-list" style="margin-left: 20px; line-height: 1.6; color: #ddd;">
-        <li>Enter your name, your friend’s name, and an optional wish.</li>
-        <li>Optionally upload your friend’s photo.</li>
-        <li>Choose template & music theme.</li>
-        <li>Click “Generate Celebration Link”.</li>
-        <li>Share the link via WhatsApp, Instagram, Facebook or Copy Paste also.</li>
-        <li>When your friend/loved person opens it, they see a gift box. On opening → full celebration! that you see
-          first.</li>
-        <li>You can also Download a QR code & share it anywhere.</li>
-      </ol>
+    <section class="card info-card" style="padding-bottom: 20px;">
+      <h2 style="margin-bottom: 10px;">How to Create Your Celebration Link</h2>
+
+      <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.6; color: #ddd;">
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">📝</span>
+          <span><strong>Enter Your Details</strong><br>Type your name & your friend’s name.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">📸</span>
+          <span><strong>Upload a Photo (Optional)</strong><br>Add your friend’s picture or skip it.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">🎨</span>
+          <span><strong>Choose a Template</strong><br>Select Default, Love, Family, Friendship, Professional, or Neon
+            themes.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">🎵</span>
+          <span><strong>Select Music</strong><br>Pick background music for the celebration.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">💬</span>
+          <span><strong>Write a Wish (Optional)</strong><br>Or use AI Wish Generator in your language.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">✨</span>
+          <span><strong>Click “Generate Celebration Link”</strong><br>App shows full-screen animation: Preparing →
+            Uploading → Saving → Done.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">🎉</span>
+          <span><strong>Success Popup</strong><br>Your celebration link is ready to use.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">🔗</span>
+          <span><strong>Get Your Shareable Link</strong><br>Copy it, preview it, or share via WhatsApp, Telegram,
+            Facebook.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">📱</span>
+          <span><strong>Generate a QR Code</strong><br>Download and share the QR anywhere.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">🎁</span>
+          <span><strong>Your Friend Opens the Gift</strong><br>Gift box → Opening animation → Name reveal → Wish →
+            Music.</span>
+        </li>
+
+        <li style="margin-bottom: 14px; display:flex; align-items:flex-start; gap:10px;">
+          <span style="font-size:22px;">🌐</span>
+          <span><strong>Works Everywhere</strong><br>Android, iPhone, Laptop, Browser, and Installed PWA.</span>
+        </li>
+
+      </ul>
     </section>
+
+
   </main>
 
   <section class="card slide-up" id="leaderboard-card" slide-up>
@@ -193,10 +251,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
- <!-- Popup Modal for Selecting Wishes (fixed wrapper + inner) -->
-  
+  <!-- Popup Modal for Selecting Wishes (fixed wrapper + inner) -->
 
-<div id="wishPopup" style="
+
+  <div id="wishPopup" style="
   position: fixed;
   top: 0;
   left: 0;
@@ -207,7 +265,7 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;">
-  <div id="wishPopupInner" class="ai-popup" style="
+    <div id="wishPopupInner" class="ai-popup" style="
     background: #fff;
     padding: 20px;
     width: 90%;
@@ -215,16 +273,16 @@
     border-radius: 10px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.25);
   ">
-    <h3 style="margin-bottom: 10px; text-align: center;">Select Your Wish</h3>
+      <h3 style="margin-bottom: 10px; text-align: center;">Select Your Wish</h3>
 
-    <div id="popupWishList"></div>
+      <div id="popupWishList"></div>
 
-    <button id="closePopup" class="btn" style="margin-top: 15px; width: 100%;">Close</button>
+      <button id="closePopup" class="btn" style="margin-top: 15px; width: 100%;">Close</button>
+    </div>
   </div>
-</div>
-<audio id="typeSound">
-  <source src="assets/sounds/typewriter_click.wav" type="audio/wav">
-</audio>
+  <audio id="typeSound">
+    <source src="assets/sounds/typewriter_click.wav" type="audio/wav">
+  </audio>
 
 
 
@@ -241,8 +299,8 @@
     let keyBuffer = "";
 
     document.addEventListener("keydown", (e) => {
-  if (!e.key) return; // FIX: prevents undefined error
-  keyBuffer += e.key.toLowerCase();
+      if (!e.key) return; // FIX: prevents undefined error
+      keyBuffer += e.key.toLowerCase();
 
 
       // If admin secret code is typed
@@ -286,15 +344,51 @@
     });
   </script>
 
-<script>
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    window.deferredPrompt = e;
+  <script>
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
 
-    // Optional: Add a button UI later for “Install App”
-    console.log("PWA install available");
-  });
-</script>
+      // Optional: Add a button UI later for “Install App”
+      console.log("PWA install available");
+    });
+  </script>
+  <div id="fullPageLoader" style="
+  position:fixed; inset:0; 
+  background:rgba(0,0,0,0.85);
+  color:white;
+  font-size:22px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999999;
+  flex-direction:column;
+">
+    <div class="loader-ring"></div>
+    <div id="loaderStepText" style="margin-top:12px;">Preparing…</div>
+  </div>
+
+  <div id="successPopup" style="
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.65);
+  align-items:center; justify-content:center;
+  z-index:999999;
+">
+    <div style="
+   background:#fff; padding:20px;
+   border-radius:12px; text-align:center;
+   max-width:300px;
+ ">
+      <h3 style="color: rgb(38, 0, 255);">🎉 Link Generated Successfully!</h3>
+      <button id="popupOkBtn" class="btn">OK</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("popupOkBtn").onclick = () => {
+      document.getElementById("successPopup").style.display = "none";
+    };
+  </script>
 
 </body>
 

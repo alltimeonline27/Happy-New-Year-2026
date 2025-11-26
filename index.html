@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Happy New Year 2026</title>
@@ -21,6 +22,7 @@
     }
   </style>
 </head>
+
 <body>
   Redirecting to celebration…
 
@@ -30,14 +32,15 @@
     }
   </script>
   <script>
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    window.deferredPrompt = e;
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      window.deferredPrompt = e;
 
-    // Optional: Add a button UI later for “Install App”
-    console.log("PWA install available");
-  });
-</script>
+      // Optional: Add a button UI later for “Install App”
+      console.log("PWA install available");
+    });
+  </script>
 
 </body>
+
 </html>

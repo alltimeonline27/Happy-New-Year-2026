@@ -93,7 +93,7 @@ function slugifyName(name) {
 function getBadge(count) {
   if (count >= 30) return "🥇 Gold";
   if (count >= 15) return "🥈 Silver";
-  if (count >= 5)  return "🥉 Bronze";
+  if (count >= 5) return "🥉 Bronze";
   return null;
 }
 
@@ -127,7 +127,7 @@ async function loadLeaderboard(currentSender = null) {
       list.innerHTML += `
         <li class="${isCurrent ? 'highlight' : ''}">
           <div class="leader-name">${rank}. ${d.displayName}</div>
-          <div class="leader-count">${d.count} ${badge ? '• '+badge : ''}</div>
+          <div class="leader-count">${d.count} ${badge ? '• ' + badge : ''}</div>
         </li>
       `;
       rank++;
