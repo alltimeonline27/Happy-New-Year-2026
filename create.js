@@ -1475,6 +1475,17 @@ async function handleGenerateClick() {
     hideFullLoader();
     successPopup.style.display = "flex";
 
+    // NEW: Creator ID system
+function slugifyName(name) {
+  return name.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "_");
+}
+
+const creatorId = slugifyName(senderNameInput.value || "someone");
+
+// Save locally so history page can load
+localStorage.setItem("creatorId", creatorId);
+localStorage.setItem("creatorDisplayName", senderNameInput.value || "Someone");
+
     // Save to Firestore
     const docRef = await db.collection("celebrations").add({
       senderName: sender,
@@ -1489,6 +1500,7 @@ async function handleGenerateClick() {
       views: 0,
       shares: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      creatorId: creatorId, 
       lastOpened: firebase.firestore.FieldValue.serverTimestamp(),
       device: navigator.platform,
       ip: geo.ip || "",
