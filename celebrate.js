@@ -285,6 +285,99 @@ async function loadCelebration() {
     // load reviews now that we have a valid id
     loadReviews();
 
+    // Like / Dislike Handler
+    document.addEventListener("click", async (e) => {
+      const id = celebrationId || getGiftIdFromUrl();
+      if (!id) return;
+
+      // LIKE
+      if (e.target.classList.contains("like-btn")) {
+        const reviewId = e.target.dataset.review;
+
+        const reviewRef = db.collection("celebrations")
+          .doc(id)
+          .collection("reviews")
+          .doc(reviewId);
+
+        await db.runTransaction(async (t) => {
+          const snap = await t.get(reviewRef);
+          if (!snap.exists) return;
+
+          const d = snap.data();
+
+          let newLikes = d.likes || 0;
+          let newDislikes = d.dislikes || 0;
+
+          // If user already liked → remove like
+          if (d.userReaction === userId && d.lastReaction === "like") {
+            newLikes -= 1;
+            t.update(reviewRef, {
+              likes: newLikes,
+              userReaction: null,
+              lastReaction: null
+            });
+            return;
+          }
+
+          // If user disliked before → remove dislike
+          if (d.lastReaction === "dislike") newDislikes -= 1;
+
+          t.update(reviewRef, {
+            likes: newLikes + 1,
+            dislikes: newDislikes,
+            userReaction: userId,
+            lastReaction: "like"
+          });
+        });
+
+        loadReviews();
+      }
+
+      // DISLIKE
+      if (e.target.classList.contains("dislike-btn")) {
+        const reviewId = e.target.dataset.review;
+
+        const reviewRef = db.collection("celebrations")
+          .doc(id)
+          .collection("reviews")
+          .doc(reviewId);
+
+        await db.runTransaction(async (t) => {
+          const snap = await t.get(reviewRef);
+          if (!snap.exists) return;
+
+          const d = snap.data();
+
+          let newLikes = d.likes || 0;
+          let newDislikes = d.dislikes || 0;
+
+          // If user already disliked → remove dislike
+          if (d.userReaction === userId && d.lastReaction === "dislike") {
+            newDislikes -= 1;
+            t.update(reviewRef, {
+              dislikes: newDislikes,
+              userReaction: null,
+              lastReaction: null
+            });
+            return;
+          }
+
+          // If user liked before → revert like
+          if (d.lastReaction === "like") newLikes -= 1;
+
+          t.update(reviewRef, {
+            likes: newLikes,
+            dislikes: newDislikes + 1,
+            userReaction: userId,
+            lastReaction: "dislike"
+          });
+        });
+
+        loadReviews();
+      }
+    });
+
+
 
     loadLeaderboard(data.senderName);
     applyTheme(data.template);
@@ -593,8 +686,13 @@ if (submitReviewBtn) {
         .set({
           rating: selectedStars,
           reviewText: text,
+          reviewerName: receiverName || "Anonymous",
+          reviewerId: userId,
+          likes: 0,
+          dislikes: 0,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
+
 
       alert("Review submitted.");
       // refresh reviews (use the id we used)
@@ -640,55 +738,62 @@ if (deleteReviewBtn) {
 }
 // Load reviews function
 async function loadReviews() {
-  // FIX: Always get ID safely
-  const id = celebrationId || getGiftIdFromUrl();
-
-  if (!id) {
-    console.warn("No celebrationId found yet.");
-    allReviewsBox.innerHTML = "<p>No reviews yet.</p>";
-    avgRatingEl.textContent = "0";
-    deleteReviewBtn.style.display = "none";
-    return;
-  }
+  const giftId = celebrationId || getGiftIdFromUrl();
+  if (!giftId) return;
 
   const snap = await db.collection("celebrations")
-    .doc(id)
+    .doc(giftId)
     .collection("reviews")
     .orderBy("createdAt", "desc")
     .get();
 
+  allReviewsBox.innerHTML = "";
+  avgRatingEl.textContent = "—";
+
   if (snap.empty) {
     allReviewsBox.innerHTML = "<p>No reviews yet.</p>";
-    avgRatingEl.textContent = "0";
-    deleteReviewBtn.style.display = "none";
     return;
   }
 
   let total = 0;
-  let count = snap.size;
-  allReviewsBox.innerHTML = "";
+  let count = 0;
 
   snap.forEach((doc) => {
-    const d = doc.data();
-    total += d.rating;
+    const data = doc.data();
 
-    if (doc.id === userId) deleteReviewBtn.style.display = "inline-block";
+    // COUNT ALL REVIEWS
+    total += data.rating;
+    count++;
 
-    const div = document.createElement("div");
-    div.style.marginBottom = "12px";
-    div.style.padding = "10px";
-    div.style.border = "1px solid #444";
-    div.style.borderRadius = "6px";
+    // BUILD REVIEW CARD
+    const card = document.createElement("div");
+    card.classList.add("ratingReviewCard");
 
-    div.innerHTML = `
-      <strong>${"★".repeat(d.rating)}${"☆".repeat(5 - d.rating)}</strong>
-      <p>${d.reviewText || "No review text"}</p>
-      ${d.adminReply ? `<p style="color:#0f0;">Admin Reply: ${d.adminReply}</p>` : ""}
+    card.innerHTML = `
+      <strong style="color:#fff; font-size:16px;">${data.reviewerName || "User"}</strong>
+
+      <div style="font-size:18px; color:#f9c851; margin-top:5px;">
+        ${"★".repeat(data.rating)}${"☆".repeat(5 - data.rating)}
+      </div>
+
+      <p style="margin-top:6px;">${data.reviewText || ""}</p>
+
+      <div style="margin-top:8px;">
+        <button class="like-btn" data-review="${doc.id}">👍 ${data.likes || 0}</button>
+        <button class="dislike-btn" data-review="${doc.id}">👎 ${data.dislikes || 0}</button>
+      </div>
+
+      ${data.adminReply ? `
+        <p style="color:#4cd964; margin-top:6px;">
+          <strong>Admin Reply:</strong> ${data.adminReply}
+        </p>
+      ` : ""}
     `;
 
-    allReviewsBox.appendChild(div);
+    allReviewsBox.appendChild(card);
   });
 
-  avgRatingEl.textContent = (total / count).toFixed(1);
+  // SET AVERAGE RATING
+  const avg = (total / count).toFixed(1);
+  avgRatingEl.textContent = avg;
 }
-

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Public Reviews | Happy New Year 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 26px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .filters button, #sortSelect {
+      background: #222;
+      border: 1px solid #444;
+      padding: 8px 14px;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .filters button.active {
+      background: #f39c12;
+      border-color: #f1c40f;
+    }
+
+    #reviewsList {
+      margin-top: 20px;
+    }
+
+    .reviewCard {
+      border: 1px solid #333;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background: #111;
+    }
+
+    .stars {
+      color: #f1c40f;
+      font-size: 18px;
+    }
+
+    .like-dislike {
+      margin-top: 8px;
+    }
+
+    .like-dislike button {
+      background: #222;
+      border: 1px solid #555;
+      padding: 5px 10px;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    .openGiftBtn {
+      margin-top: 10px;
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #0066ff;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .reviewCard { font-size: 14px; }
+      .stars { font-size: 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Public Reviews</h1>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button data-filter="all" class="active">All</button>
+    <button data-filter="5">5★</button>
+    <button data-filter="4">4★</button>
+    <button data-filter="3">3★</button>
+    <button data-filter="2">2★</button>
+    <button data-filter="1">1★</button>
+    <button data-filter="admin">Admin Replied</button>
+
+    <select id="sortSelect">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="top">Highest Rated</option>
+      <option value="low">Lowest Rated</option>
+      <option value="liked">Most Liked</option>
+    </select>
+  </div>
+
+  <!-- REVIEWS -->
+  <div id="reviewsList">Loading reviews...</div>
+
+  <script type="module" src="public-reviews.js"></script>
+</body>
+</html>
