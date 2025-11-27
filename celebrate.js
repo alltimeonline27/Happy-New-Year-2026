@@ -797,3 +797,25 @@ async function loadReviews() {
   const avg = (total / count).toFixed(1);
   avgRatingEl.textContent = avg;
 }
+let deferredPrompt;
+const installBubble = document.getElementById("installBubble");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBubble.classList.remove("hidden"); // show bubble
+});
+
+installBubble.addEventListener("click", async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+
+    if (choice.outcome === "accepted") {
+        console.log("User installed the app");
+    }
+
+    installBubble.classList.add("hidden"); // hide after install
+    deferredPrompt = null;
+});
