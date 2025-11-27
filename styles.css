@@ -1028,50 +1028,54 @@ small {
 
 /* ========== RESPONSIVE HISTORY TABLE ========== */
 @media (max-width: 600px) {
+
   /* Make card full-width */
   .card {
     padding: 18px;
   }
 
-  /* Make the table scroll */}
-  .admin-table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
+  /* Make the table scroll */
+}
 
-  .admin-table th,
-  .admin-table td {
-    padding: 10px 14px;
-    font-size: 14px;
-  }
+.admin-table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
 
-  /* Center the header text */
-  .top-bar .logo-text {
-    font-size: 16px;
-  }
+.admin-table th,
+.admin-table td {
+  padding: 10px 14px;
+  font-size: 14px;
+}
 
-  /* History info text */
-  #creatorInfo {
-    font-size: 14px;
-  }
+/* Center the header text */
+.top-bar .logo-text {
+  font-size: 16px;
+}
 
-  /* Better spacing on mobile */
-  h1 {
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
+/* History info text */
+#creatorInfo {
+  font-size: 14px;
+}
 
-  .card h1 + p {
-    margin-bottom: 12px;
-  }
+/* Better spacing on mobile */
+h1 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.card h1+p {
+  margin-bottom: 12px;
+}
 
 /* Better vertical spacing for history page */
 #historyTbody tr td a {
   color: #6d82ff;
   text-decoration: underline;
 }
+
 /* ========== NAVBAR FIX FOR HISTORY PAGE ========== */
 .top-bar {
   display: flex;
@@ -1094,9 +1098,11 @@ small {
   .top-bar {
     padding: 10px 14px;
   }
+
   .logo-text {
     font-size: 16px !important;
   }
+
   .nav-right .top-link {
     font-size: 14px;
   }

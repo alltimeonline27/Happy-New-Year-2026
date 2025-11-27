@@ -1,3 +1,5 @@
+let isAdmin = false;
+
 const firebaseConfig = {
   apiKey: "AIzaSyAHKe9YThgj5WSxNsaq4Rq8Fh32uktUd0b",
   authDomain: "happy-new-year-2026-7eac0.firebaseapp.com",
@@ -26,10 +28,24 @@ adminLoginBtn.addEventListener("click", () => {
   const email = adminEmailInput.value.trim().toLowerCase();
   if (email === ADMIN_EMAIL) {
     adminStatus.textContent = "Admin access granted.";
+
+    // Unlock admin sections
+    document.getElementById("adminContent").style.display = "block";
+    document.getElementById("adminReviewsSection").style.display = "block";
+
+    // Set admin flag
+    isAdmin = true;
+
+    // Load all admin data
     loadAdminData();
-  } else {
-    adminStatus.textContent = "Invalid admin email.";
+    loadAllReviewsAdmin();
   }
+  else {
+    email;
+    adminStatus.textContent = "Access denied. Incorrect email.";
+    adminContent.style.display = "none";
+  }
+
 });
 
 async function loadAdminData() {
@@ -180,6 +196,143 @@ if (themeToggle) {
     }
   });
 }
+
+// ========== ADMIN REVIEW REPLY ==========
+async function openReplyBox(giftId, userId, existingText = "") {
+  const reply = prompt("Enter your reply:", existingText);
+  if (reply === null) return;
+
+  await db.collection("celebrations")
+    .doc(giftId)
+    .collection("reviews")
+    .doc(userId)
+    .update({ adminReply: reply });
+
+  alert("Reply saved!");
+  loadAdminData();
+}
+
+async function loadAllReviewsForAdmin() {
+  const container = document.createElement("section");
+  container.classList.add("card");
+  container.style.marginTop = "20px";
+  container.innerHTML = "<h2>All Reviews</h2>";
+
+  const celebrationsSnap = await db.collection("celebrations").get();
+
+  celebrationsSnap.forEach(async (celeDoc) => {
+    const reviewsSnap = await celeDoc.ref.collection("reviews").get();
+    if (reviewsSnap.empty) return;
+
+    reviewsSnap.forEach(doc => {
+      const d = doc.data();
+      const div = document.createElement("div");
+      div.style.padding = "10px";
+      div.style.border = "1px solid #444";
+      div.style.borderRadius = "6px";
+      div.style.marginBottom = "10px";
+
+      div.innerHTML = `
+        <strong>Gift ID:</strong> ${celeDoc.id}<br>
+        <strong>User ID:</strong> ${doc.id}<br>
+        <strong>Rating:</strong> ${d.rating} ★<br>
+        <strong>Review:</strong> ${d.reviewText || "(empty)"}<br>
+        ${d.adminReply ? `<strong style='color:#0f0;'>Admin Reply:</strong> ${d.adminReply}<br>` : ""}
+        ${isAdmin ? `
+  <button onclick="adminReplyPrompt('${giftId}', '${reviewDoc.id}', '${data.adminReply || ""}')"
+    class="btn small" style="margin-top:8px;">
+    Reply as Admin
+  </button>
+` : ``}
+
+        <hr>
+      `;
+      container.appendChild(div);
+    });
+  });
+
+  document.querySelector("main").appendChild(container);
+}
+
+// Load admin reviews automatically
+loadAllReviewsForAdmin();
+
+// =========================
+// ADMIN: LOAD ALL REVIEWS
+// =========================
+async function loadAllReviewsAdmin() {
+  const container = document.getElementById("adminReviewsContainer");
+  container.innerHTML = "<p>Loading...</p>";
+
+  const reviewsHTML = [];
+  const celebrationsSnap = await db.collection("celebrations").get();
+
+  for (const giftDoc of celebrationsSnap.docs) {
+    const giftId = giftDoc.id;
+    const reviewSnap = await giftDoc.ref.collection("reviews").get();
+
+    reviewSnap.forEach((reviewDoc) => {
+      const data = reviewDoc.data();
+
+      reviewsHTML.push(`
+        <div style="border:1px solid #444; padding:12px; border-radius:8px; margin-bottom:12px;">
+          <strong>Gift ID:</strong> ${giftId}<br>
+          <strong>User ID:</strong> ${reviewDoc.id}<br>
+          <strong>Rating:</strong> ${data.rating} ★<br>
+          <strong>Review:</strong> ${data.reviewText || "(no text)"}<br>
+
+          ${data.adminReply
+          ? `<p style="color:#0f0;"><strong>Admin Reply:</strong> ${data.adminReply}</p>`
+          : `<p style="color:#aaa;"><em>No admin reply yet</em></p>`
+        }
+
+          <button onclick="adminReplyPrompt('${giftId}', '${reviewDoc.id}', '${data.adminReply || ""}')"
+            class="btn small" style="margin-top:8px;">
+            Reply as Admin
+          </button>
+        </div>
+      `);
+    });
+  }
+
+  if (reviewsHTML.length === 0) {
+    container.innerHTML = "<p>No reviews found.</p>";
+  } else {
+    container.innerHTML = reviewsHTML.join("");
+  }
+}
+
+// =========================
+// ADMIN REPLY POPUP
+// =========================
+async function adminReplyPrompt(giftId, userId, existingReply) {
+  if (!isAdmin) {
+    alert("Access denied. Only admin can reply.");
+    return;
+  }
+
+  const reply = prompt(
+    "Enter your reply:",
+    existingReply || ""
+  );
+  if (reply === null) return;
+
+  await db.collection("celebrations")
+    .doc(giftId)
+    .collection("reviews")
+    .doc(userId)
+    .update({
+      adminReply: reply
+    });
+
+  alert("Reply saved!");
+  loadAllReviewsAdmin();
+}
+
+// Load reviews automatically on admin page load
+loadAllReviewsAdmin();
+
+
 // Auto-apply fade-in animations
 window.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".fade-in, .slide-up, .fade-scale")

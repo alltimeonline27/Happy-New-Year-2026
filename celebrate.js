@@ -14,6 +14,13 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
+// ===== UNIQUE USER ID FOR REVIEWS =====
+if (!localStorage.getItem("ny2026_userId")) {
+  localStorage.setItem("ny2026_userId", "user_" + Math.random().toString(36).substring(2));
+}
+const userId = localStorage.getItem("ny2026_userId");
+
+
 // DOM references
 const headline = document.getElementById("headline");
 const senderLine = document.getElementById("senderLine");
@@ -269,6 +276,16 @@ async function loadCelebration() {
 
     const data = snap.data();
     applyGiftData(data);
+    // set celebrationId, enable review submission and load reviews
+    celebrationId = getGiftIdFromUrl();
+
+    // enable submit button (guard: element may exist)
+    if (submitReviewBtn) submitReviewBtn.disabled = false;
+
+    // load reviews now that we have a valid id
+    loadReviews();
+
+
     loadLeaderboard(data.senderName);
     applyTheme(data.template);
     // Set music based on user's choice
@@ -520,3 +537,158 @@ reactionDoc.onSnapshot(doc => {
     🎉 ${d.party || 0}
   `;
 });
+// ========== RATING + REVIEW SYSTEM ==========
+const ratingStars = document.getElementById("ratingStars");
+const reviewTextInput = document.getElementById("reviewText");
+const submitReviewBtn = document.getElementById("submitReviewBtn");
+const deleteReviewBtn = document.getElementById("deleteReviewBtn");
+const allReviewsBox = document.getElementById("allReviews");
+const avgRatingEl = document.getElementById("avgRating");
+// disable submit until celebrationId is known
+if (submitReviewBtn) submitReviewBtn.disabled = true;
+
+
+// const userId = localStorage.getItem("creatorId") || "guest_user";
+let selectedStars = 0;
+let celebrationId = null;  // <-- ADD THIS
+
+// let celebrationId = getGiftIdFromUrl();
+
+// Highlight stars on hover/click
+// NEW FIXED STAR CLICK LOGIC
+ratingStars.addEventListener("click", (e) => {
+  if (!e.target.classList.contains("star")) return;
+
+  selectedStars = parseInt(e.target.dataset.value);
+
+  const stars = ratingStars.querySelectorAll(".star");
+  stars.forEach((star, i) => {
+    star.textContent = i < selectedStars ? "★" : "☆";
+  });
+});
+
+
+// Robust Submit Review handler (use URL fallback)
+if (submitReviewBtn) {
+  submitReviewBtn.addEventListener("click", async () => {
+    // determine the id: prefer global, fallback to URL param
+    const id = celebrationId || getGiftIdFromUrl();
+    if (!id) {
+      alert("Gift ID not found. Please open this gift via a valid link.");
+      return;
+    }
+
+    if (!selectedStars) {
+      alert("Please select a rating.");
+      return;
+    }
+
+    const text = reviewTextInput.value.trim();
+
+    try {
+      await db.collection("celebrations")
+        .doc(id)
+        .collection("reviews")
+        .doc(userId)
+        .set({
+          rating: selectedStars,
+          reviewText: text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+      alert("Review submitted.");
+      // refresh reviews (use the id we used)
+      loadReviews();
+    } catch (err) {
+      console.error("Submit review failed:", err);
+      alert("Failed to submit review. Check console.");
+    }
+  });
+}
+
+
+// Robust Delete Review handler
+if (deleteReviewBtn) {
+  deleteReviewBtn.addEventListener("click", async () => {
+    const id = celebrationId || getGiftIdFromUrl();
+    if (!id) {
+      alert("Gift ID not found. Please open this gift via a valid link.");
+      return;
+    }
+
+    try {
+      await db.collection("celebrations")
+        .doc(id)
+        .collection("reviews")
+        .doc(userId)
+        .delete();
+
+      alert("Review deleted.");
+      selectedStars = 0;
+      // reset stars visually
+      const stars = ratingStars.querySelectorAll(".star");
+      if (stars) stars.forEach(s => (s.textContent = "☆"));
+      if (ratingStars) ratingStars.style.pointerEvents = "auto";
+      if (reviewTextInput) reviewTextInput.value = "";
+
+      loadReviews();
+    } catch (err) {
+      console.error("Delete review failed:", err);
+      alert("Failed to delete review. Check console.");
+    }
+  });
+}
+// Load reviews function
+async function loadReviews() {
+  // FIX: Always get ID safely
+  const id = celebrationId || getGiftIdFromUrl();
+
+  if (!id) {
+    console.warn("No celebrationId found yet.");
+    allReviewsBox.innerHTML = "<p>No reviews yet.</p>";
+    avgRatingEl.textContent = "0";
+    deleteReviewBtn.style.display = "none";
+    return;
+  }
+
+  const snap = await db.collection("celebrations")
+    .doc(id)
+    .collection("reviews")
+    .orderBy("createdAt", "desc")
+    .get();
+
+  if (snap.empty) {
+    allReviewsBox.innerHTML = "<p>No reviews yet.</p>";
+    avgRatingEl.textContent = "0";
+    deleteReviewBtn.style.display = "none";
+    return;
+  }
+
+  let total = 0;
+  let count = snap.size;
+  allReviewsBox.innerHTML = "";
+
+  snap.forEach((doc) => {
+    const d = doc.data();
+    total += d.rating;
+
+    if (doc.id === userId) deleteReviewBtn.style.display = "inline-block";
+
+    const div = document.createElement("div");
+    div.style.marginBottom = "12px";
+    div.style.padding = "10px";
+    div.style.border = "1px solid #444";
+    div.style.borderRadius = "6px";
+
+    div.innerHTML = `
+      <strong>${"★".repeat(d.rating)}${"☆".repeat(5 - d.rating)}</strong>
+      <p>${d.reviewText || "No review text"}</p>
+      ${d.adminReply ? `<p style="color:#0f0;">Admin Reply: ${d.adminReply}</p>` : ""}
+    `;
+
+    allReviewsBox.appendChild(div);
+  });
+
+  avgRatingEl.textContent = (total / count).toFixed(1);
+}
+

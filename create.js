@@ -1476,15 +1476,15 @@ async function handleGenerateClick() {
     successPopup.style.display = "flex";
 
     // NEW: Creator ID system
-function slugifyName(name) {
-  return name.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "_");
-}
+    function slugifyName(name) {
+      return name.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "_");
+    }
 
-const creatorId = slugifyName(senderNameInput.value || "someone");
+    const creatorId = slugifyName(senderNameInput.value || "someone");
 
-// Save locally so history page can load
-localStorage.setItem("creatorId", creatorId);
-localStorage.setItem("creatorDisplayName", senderNameInput.value || "Someone");
+    // Save locally so history page can load
+    localStorage.setItem("creatorId", creatorId);
+    localStorage.setItem("creatorDisplayName", senderNameInput.value || "Someone");
 
     // Save to Firestore
     const docRef = await db.collection("celebrations").add({
@@ -1500,7 +1500,7 @@ localStorage.setItem("creatorDisplayName", senderNameInput.value || "Someone");
       views: 0,
       shares: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      creatorId: creatorId, 
+      creatorId: creatorId,
       lastOpened: firebase.firestore.FieldValue.serverTimestamp(),
       device: navigator.platform,
       ip: geo.ip || "",

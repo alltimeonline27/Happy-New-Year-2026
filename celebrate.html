@@ -44,7 +44,7 @@
     <button id="soundToggle" class="sound-btn" style="background-color: rgb(234, 255, 0); color: black;">🔊 Sound
       On</button>
     <button id="themeToggle" class="theme-btn">☀️</button>
-<a href="history.html" class="top-link">My Gifts🎁</a>
+    <a href="history.html" class="top-link">My Gifts🎁</a>
 
     <a href="create.html" class="top-link">Create a Gift🎁</a>
   </header>
@@ -105,6 +105,38 @@
     <h3>🏆 Global Leaderboard</h3>
     <ul id="leaderboard-list" style="list-style:none; padding:0; margin:10px 0 0 0;"></ul>
     <div id="your-rank"></div>
+  </section>
+  <!-- ========== REVIEW & RATING SECTION ========== -->
+  <section class="card" id="ratingReviewCard" style="margin-top:20px;">
+    <h3>Rate & Review This Gift</h3>
+
+    <!-- Rating Stars -->
+    <div id="ratingStars">
+      <span class="star" data-value="1">☆</span>
+      <span class="star" data-value="2">☆</span>
+      <span class="star" data-value="3">☆</span>
+      <span class="star" data-value="4">☆</span>
+      <span class="star" data-value="5">☆</span>
+    </div>
+
+
+    <!-- Review Input -->
+    <textarea id="reviewText" rows="3" placeholder="Write your review..."
+      style="width:100%; margin-top:10px; padding:10px; border-radius:8px;"></textarea>
+
+    <!-- Submit/Delete Buttons -->
+    <div style="display:flex; gap:10px; margin-top:10px;">
+      <button class="btn primary" id="submitReviewBtn">Submit</button>
+      <button class="btn danger-btn" id="deleteReviewBtn" style="display:none;">Delete My Review</button>
+    </div>
+
+    <hr style="margin:20px 0;">
+
+    <!-- Average Rating -->
+    <h4>Average Rating: <span id="avgRating">—</span> ★</h4>
+
+    <!-- All Reviews -->
+    <div id="allReviews"></div>
   </section>
 
 
