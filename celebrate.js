@@ -798,24 +798,30 @@ async function loadReviews() {
   avgRatingEl.textContent = avg;
 }
 let deferredPrompt;
-const installBubble = document.getElementById("installBubble");
 
 window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    installBubble.classList.remove("hidden"); // show bubble
+
+    const installBubble = document.getElementById("installBubble");
+    if (installBubble) {
+        installBubble.style.display = "flex";   // Show button
+    }
 });
 
-installBubble.addEventListener("click", async () => {
+document.getElementById("installBubble")?.addEventListener("click", async () => {
     if (!deferredPrompt) return;
 
     deferredPrompt.prompt();
-    const choice = await deferredPrompt.userChoice;
+    const outcome = await deferredPrompt.userChoice;
 
-    if (choice.outcome === "accepted") {
-        console.log("User installed the app");
+    if (outcome.outcome === "accepted") {
+        console.log("PWA Installed");
     }
 
-    installBubble.classList.add("hidden"); // hide after install
-    deferredPrompt = null;
+    deferredPrompt = null; 
 });
+
+document.getElementById("createGiftBubble").onclick = () => {
+    window.location.href = "create.html";
+};
