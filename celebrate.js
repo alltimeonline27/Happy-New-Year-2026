@@ -41,6 +41,16 @@ const countdownOverlay = document.getElementById("countdownOverlay");
 let senderName = "";
 let receiverName = "";
 
+// Show floating buttons after delay
+function showFloatingButtons() {
+    const installBubble = document.getElementById("installBubble");
+    const createGiftWrapper = document.getElementById("createGiftWrapper");
+
+    if (installBubble) installBubble.style.display = "flex";
+    if (createGiftWrapper) createGiftWrapper.style.display = "block";
+}
+
+
 // Loader helpers
 function hideLoader() {
   if (!loaderOverlay) return;
@@ -253,6 +263,18 @@ async function handleGiftOpen() {
   startFireworksV2();
 
   afterGiftActions.style.pointerEvents = "auto";
+
+   // 🚀 =========== NEW CODE ==========  
+    // Hide floating buttons at first
+    const installBubble = document.getElementById("installBubble");
+    const createGiftWrapper = document.getElementById("createGiftWrapper");
+
+    if (installBubble) installBubble.style.display = "none";
+    if (createGiftWrapper) createGiftWrapper.style.display = "none";
+
+    // Show after 10 seconds
+    setTimeout(showFloatingButtons, 10000);
+
 }
 
 // Load celebration
@@ -803,11 +825,10 @@ window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
 
-    const installBubble = document.getElementById("installBubble");
-    if (installBubble) {
-        installBubble.style.display = "flex";   // Show button
-    }
+    // Do NOT show installBubble now 
+    // It will be shown ONLY after gift open + 10 sec.
 });
+
 
 document.getElementById("installBubble")?.addEventListener("click", async () => {
     if (!deferredPrompt) return;
