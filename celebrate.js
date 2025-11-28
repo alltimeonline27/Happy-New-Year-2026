@@ -20,6 +20,16 @@ if (!localStorage.getItem("ny2026_userId")) {
 }
 const userId = localStorage.getItem("ny2026_userId");
 
+// Track if PWA already installed
+let appInstalled = false;
+
+window.addEventListener("appinstalled", () => {
+  console.log("PWA installed!");
+  appInstalled = true;
+
+  const installBubble = document.getElementById("installBubble");
+  if (installBubble) installBubble.style.display = "none";
+});
 
 // DOM references
 const headline = document.getElementById("headline");
@@ -46,9 +56,15 @@ function showFloatingButtons() {
     const installBubble = document.getElementById("installBubble");
     const createGiftWrapper = document.getElementById("createGiftWrapper");
 
-    if (installBubble) installBubble.style.display = "flex";
+    // Always show Create Gift
     if (createGiftWrapper) createGiftWrapper.style.display = "block";
+
+    // Show Install button ONLY if not installed
+    if (!appInstalled && deferredPrompt && installBubble) {
+        installBubble.style.display = "flex";
+    }
 }
+
 
 
 // Loader helpers
