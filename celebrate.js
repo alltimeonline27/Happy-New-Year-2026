@@ -53,16 +53,16 @@ let receiverName = "";
 
 // Show floating buttons after delay
 function showFloatingButtons() {
-    const installBubble = document.getElementById("installBubble");
-    const createGiftWrapper = document.getElementById("createGiftWrapper");
+  const installBubble = document.getElementById("installBubble");
+  const createGiftWrapper = document.getElementById("createGiftWrapper");
 
-    // Always show Create Gift
-    if (createGiftWrapper) createGiftWrapper.style.display = "block";
+  // Always show Create Gift
+  if (createGiftWrapper) createGiftWrapper.style.display = "block";
 
-    // Show Install button ONLY if not installed
-    if (!appInstalled && deferredPrompt && installBubble) {
-        installBubble.style.display = "flex";
-    }
+  // Show Install button ONLY if not installed
+  if (!appInstalled && deferredPrompt && installBubble) {
+    installBubble.style.display = "flex";
+  }
 }
 
 
@@ -280,16 +280,16 @@ async function handleGiftOpen() {
 
   afterGiftActions.style.pointerEvents = "auto";
 
-   // 🚀 =========== NEW CODE ==========  
-    // Hide floating buttons at first
-    const installBubble = document.getElementById("installBubble");
-    const createGiftWrapper = document.getElementById("createGiftWrapper");
+  // 🚀 =========== NEW CODE ==========  
+  // Hide floating buttons at first
+  const installBubble = document.getElementById("installBubble");
+  const createGiftWrapper = document.getElementById("createGiftWrapper");
 
-    if (installBubble) installBubble.style.display = "none";
-    if (createGiftWrapper) createGiftWrapper.style.display = "none";
+  if (installBubble) installBubble.style.display = "none";
+  if (createGiftWrapper) createGiftWrapper.style.display = "none";
 
-    // Show after 10 seconds
-    setTimeout(showFloatingButtons, 10000);
+  // Show after 10 seconds
+  setTimeout(showFloatingButtons, 10000);
 
 }
 
@@ -838,27 +838,27 @@ async function loadReviews() {
 let deferredPrompt;
 
 window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
+  e.preventDefault();
+  deferredPrompt = e;
 
-    // Do NOT show installBubble now 
-    // It will be shown ONLY after gift open + 10 sec.
+  // Do NOT show installBubble now 
+  // It will be shown ONLY after gift open + 10 sec.
 });
 
 
 document.getElementById("installBubble")?.addEventListener("click", async () => {
-    if (!deferredPrompt) return;
+  if (!deferredPrompt) return;
 
-    deferredPrompt.prompt();
-    const outcome = await deferredPrompt.userChoice;
+  deferredPrompt.prompt();
+  const outcome = await deferredPrompt.userChoice;
 
-    if (outcome.outcome === "accepted") {
-        console.log("PWA Installed");
-    }
+  if (outcome.outcome === "accepted") {
+    console.log("PWA Installed");
+  }
 
-    deferredPrompt = null; 
+  deferredPrompt = null;
 });
 
 document.getElementById("createGiftBubble").onclick = () => {
-    window.location.href = "create.html";
+  window.location.href = "create.html";
 };
