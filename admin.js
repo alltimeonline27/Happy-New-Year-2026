@@ -1,5 +1,11 @@
 let isAdmin = false;
 
+// ===== ADMIN SECURITY =====
+const ADMIN_PIN = "4052";             // change to any secret number
+const ADMIN_PASSWORD = "Ny2026@vip";  // change to any strong password
+let pinVerified = false;
+
+
 const firebaseConfig = {
   apiKey: "AIzaSyAHKe9YThgj5WSxNsaq4Rq8Fh32uktUd0b",
   authDomain: "happy-new-year-2026-7eac0.firebaseapp.com",
@@ -18,34 +24,53 @@ const db = firebase.firestore();
 const adminEmailInput = document.getElementById("adminEmail");
 const adminLoginBtn = document.getElementById("adminLoginBtn");
 const adminStatus = document.getElementById("adminStatus");
+const adminPinInput = document.getElementById("adminPin");
+const pinSubmitBtn = document.getElementById("pinSubmitBtn");
+const pinStatus = document.getElementById("pinStatus");
+const realLogin = document.getElementById("realLogin");
+const pinLock = document.getElementById("pinLock");
+const adminPassInput = document.getElementById("adminPass");
+
 const adminContent = document.getElementById("adminContent");
 const totalCelebrationsEl = document.getElementById("totalCelebrations");
 const celebrationsTableBody = document.getElementById("celebrationsTableBody");
 
-const ADMIN_EMAIL = "alltimeonline.official@gmail.com";
+const ADMIN_EMAIL = "happynewyear2026@gmail.com";
+
+pinSubmitBtn.addEventListener("click", () => {
+  if (adminPinInput.value === ADMIN_PIN) {
+    pinVerified = true;
+    pinLock.style.display = "none";
+    realLogin.style.display = "block";
+    pinStatus.textContent = "PIN Verified";
+  } else {
+    pinStatus.textContent = "Wrong PIN";
+  }
+});
 
 adminLoginBtn.addEventListener("click", () => {
-  const email = adminEmailInput.value.trim().toLowerCase();
-  if (email === ADMIN_EMAIL) {
-    adminStatus.textContent = "Admin access granted.";
 
-    // Unlock admin sections
+  if (!pinVerified) {
+    adminStatus.textContent = "Enter PIN first";
+    return;
+  }
+
+  const email = adminEmailInput.value.trim().toLowerCase();
+  const pass = adminPassInput.value;
+
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+    adminStatus.textContent = "Admin Access Granted";
+
     document.getElementById("adminContent").style.display = "block";
     document.getElementById("adminReviewsSection").style.display = "block";
 
-    // Set admin flag
     isAdmin = true;
-
-    // Load all admin data
     loadAdminData();
     loadAllReviewsAdmin();
-  }
-  else {
-    email;
-    adminStatus.textContent = "Access denied. Incorrect email.";
+  } else {
+    adminStatus.textContent = "Invalid Email or Password";
     adminContent.style.display = "none";
   }
-
 });
 
 async function loadAdminData() {
