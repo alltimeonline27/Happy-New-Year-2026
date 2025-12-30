@@ -269,20 +269,20 @@ async function handleGiftOpen() {
   // Hide tap hint + arrow once gift is opened
   document.body.classList.add("gift-opened");
 
-const tapText = document.getElementById("tapToOpen");
-const tapArrow = document.querySelector(".tap-arrow");
+  const tapText = document.getElementById("tapToOpen");
+  const tapArrow = document.querySelector(".tap-arrow");
 
-if (tapText) {
-  tapText.style.opacity = "0";
-  tapText.style.transform = "translateY(10px)";
-  tapText.style.pointerEvents = "none";
-}
+  if (tapText) {
+    tapText.style.opacity = "0";
+    tapText.style.transform = "translateY(10px)";
+    tapText.style.pointerEvents = "none";
+  }
 
-if (tapArrow) {
-  tapArrow.style.opacity = "0";
-  tapArrow.style.transform = "translateY(10px)";
-  tapArrow.style.pointerEvents = "none";
-}
+  if (tapArrow) {
+    tapArrow.style.opacity = "0";
+    tapArrow.style.transform = "translateY(10px)";
+    tapArrow.style.pointerEvents = "none";
+  }
 
   giftBox.style.pointerEvents = "none";
   giftBox.classList.remove("fade-scale", "fade-in", "slide-up");
