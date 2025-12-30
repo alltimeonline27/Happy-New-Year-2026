@@ -2,7 +2,7 @@
 // NY 2026 — OPTIMIZED SERVICE WORKER
 // ===============================
 
-const CACHE_NAME = "ny2026-v26.0.0";
+const CACHE_NAME = "ny2026-v26.0.1";
 
 // Only cache GET static files
 const ASSETS = [
