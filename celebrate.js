@@ -30,6 +30,8 @@ window.addEventListener("appinstalled", () => {
   const installBubble = document.getElementById("installBubble");
   if (installBubble) installBubble.style.display = "none";
 });
+const shareGiftWrapper = document.getElementById("shareGiftWrapper");
+if (shareGiftWrapper) shareGiftWrapper.style.display = "none";
 
 // DOM references
 const headline = document.getElementById("headline");
@@ -55,15 +57,20 @@ let receiverName = "";
 function showFloatingButtons() {
   const installBubble = document.getElementById("installBubble");
   const createGiftWrapper = document.getElementById("createGiftWrapper");
+  const shareGiftWrapper = document.getElementById("shareGiftWrapper");
 
-  // Always show Create Gift
   if (createGiftWrapper) createGiftWrapper.style.display = "block";
 
-  // Show Install button ONLY if not installed
+  if (shareGiftWrapper) {
+    shareGiftWrapper.style.display = "flex";
+    shareGiftWrapper.classList.add("show");
+  }
+
   if (!appInstalled && deferredPrompt && installBubble) {
     installBubble.style.display = "flex";
   }
 }
+
 
 
 
@@ -303,9 +310,11 @@ async function handleGiftOpen() {
   // Hide floating buttons at first
   const installBubble = document.getElementById("installBubble");
   const createGiftWrapper = document.getElementById("createGiftWrapper");
+  const shareGiftWrapper = document.getElementById("shareGiftWrapper");
 
   if (installBubble) installBubble.style.display = "none";
   if (createGiftWrapper) createGiftWrapper.style.display = "none";
+  if (shareGiftWrapper) shareGiftWrapper.style.display = "none";
 
   // Show after 10 seconds
   setTimeout(showFloatingButtons, 10000);
@@ -973,6 +982,21 @@ if (downloadBtn) {
     link.download = `Happy-New-Year-${receiverName || "Gift"}.png`;
     link.click();
 
-    downloadBtn.textContent = "⬇️ Download";
+    // Show toast
+    const toast = document.getElementById("saveToast");
+    if (toast) {
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+
+    // Auto open Share menu after download
+    const shareMenu = document.getElementById("shareMenu");
+    if (shareMenu) shareMenu.style.display = "flex";
+
+
+    downloadBtn.textContent = "⬇️";
+
+
   });
 }
