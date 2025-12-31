@@ -1364,3 +1364,156 @@ h1 {
   animation: none !important;
   display: none !important;
 }
+
+/* =======================
+   Floating Share Button
+======================= */
+
+#shareGiftWrapper {
+  position: fixed;
+  bottom: 120px;
+  right: 18px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.share-bubble {
+  background: linear-gradient(135deg, #00e0ff, #00ffa2);
+  box-shadow: 0 0 25px rgba(0, 255, 200, 0.7);
+}
+
+.share-menu {
+  display: none;
+  flex-direction: column;
+  background: rgba(10, 10, 40, 0.95);
+  border-radius: 14px;
+  padding: 10px;
+  margin-bottom: 8px;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: popIn 0.3s ease;
+}
+
+.share-menu button {
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.share-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1
+  }
+}
+
+/* Left-side Share Button */
+#shareGiftWrapper {
+  position: fixed;
+  bottom: 110px;
+  /* sits above Install App */
+  left: 18px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.share-menu {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  align-items: flex-start;
+}
+
+/* ===============================
+   LEFT SIDE SHARE BUTTON FIX
+================================ */
+
+#shareGiftWrapper {
+  position: fixed !important;
+  bottom: 110px !important;
+  /* just above Install App */
+  left: 18px !important;
+  right: auto !important;
+  transform: none !important;
+
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+}
+
+#shareGiftWrapper .bubble-label {
+  color: #fff;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Share menu should open upward */
+#shareMenu {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.download-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, #00ffd5, #00b3ff);
+  color: #000;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(0, 255, 220, 0.6);
+}
+
+.download-btn:hover {
+  box-shadow: 0 0 18px rgba(0, 255, 255, 0.9);
+}
+
+/* Navbar Right Side Layout */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Mobile: icon-only download */
+@media (max-width: 600px) {
+  .download-text {
+    display: none;
+  }
+
+  .download-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

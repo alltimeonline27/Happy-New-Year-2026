@@ -881,3 +881,98 @@ document.getElementById("installBubble")?.addEventListener("click", async () => 
 document.getElementById("createGiftBubble").onclick = () => {
   window.location.href = "create.html";
 };
+
+// =====================
+// Floating Share System
+// =====================
+
+const shareBubble = document.getElementById("shareGiftBubble");
+const shareMenu = document.getElementById("shareMenu");
+
+if (shareBubble) {
+  shareBubble.addEventListener("click", () => {
+    shareMenu.style.display =
+      shareMenu.style.display === "flex" ? "none" : "flex";
+  });
+}
+
+function getShareUrl() {
+  return window.location.href;
+}
+
+function getShareText() {
+  return "🎁 You got a Happy New Year 2026 gift! Open it here:";
+}
+
+document.querySelectorAll("#shareMenu button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const platform = btn.dataset.platform;
+    const url = encodeURIComponent(getShareUrl());
+    const text = encodeURIComponent(getShareText());
+
+    let shareUrl = "";
+
+    if (platform === "whatsapp") {
+      shareUrl = `https://wa.me/?text=${text}%20${url}`;
+    }
+    if (platform === "telegram") {
+      shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+    }
+    if (platform === "facebook") {
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    }
+    if (platform === "instagram") {
+      alert("Instagram does not support direct link sharing.\nUse 'More' to copy or system share.");
+      return;
+    }
+    if (platform === "system") {
+      if (navigator.share) {
+        navigator.share({
+          title: "Happy New Year 2026 Gift",
+          text: "Someone sent you a special New Year gift!",
+          url: window.location.href
+        });
+        return;
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+        return;
+      }
+    }
+
+    window.open(shareUrl, "_blank");
+  });
+});
+// =====================
+// DOWNLOAD GIFT IMAGE
+// =====================
+const downloadBtn = document.getElementById("downloadGiftBtn");
+
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", async () => {
+    const capture = document.getElementById("captureArea");
+
+    if (!capture || revealBlock.style.opacity !== "1") {
+      alert("Please open the gift first 🎁");
+      return;
+    }
+
+    // Smooth UI hide
+    downloadBtn.textContent = "📸 Creating…";
+
+    const canvas = await html2canvas(capture, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null
+    });
+
+    const image = canvas.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = `Happy-New-Year-${receiverName || "Gift"}.png`;
+    link.click();
+
+    downloadBtn.textContent = "⬇️ Download";
+  });
+}

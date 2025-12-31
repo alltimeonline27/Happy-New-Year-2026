@@ -40,17 +40,23 @@
 
       <!-- <div class="logo-text" id="brandTitle" >NY2026</div> -->
     </div>
+    <div class="nav-right">
+      <button id="downloadGiftBtn" class="download-btn">
+        ⬇️ <span class="download-text">Download</span>
+      </button>
 
-    <button id="soundToggle" class="sound-btn" style="background-color: rgb(234, 255, 0); color: black;">🔊 Sound
-      On</button>
-    <button id="themeToggle" class="theme-btn">☀️</button>
-    <a href="history.html" class="top-link">My Gifts🎁</a>
 
-    <a href="create.html" class="top-link">Create a Gift🎁</a>
+      <button id="soundToggle" class="sound-btn" style="background-color: rgb(234, 255, 0); color: black;">🔊 Sound
+        On</button>
+      <button id="themeToggle" class="theme-btn">☀️</button>
+      <a href="history.html" class="top-link">My Gifts🎁</a>
+
+      <a href="create.html" class="top-link">Create a Gift🎁</a>
+    </div>
   </header>
 
   <main class="container one-column fade-in" fade-in>
-    <section class="card celebration-card">
+    <section class="card celebration-card" id="captureArea">
       <div class="celebration-content">
         <h2 id="headline" class="neon-title">Happy New Year 2026!</h2>
         <h3 id="senderLine" class="neon-subtitle"></h3>
@@ -137,6 +143,7 @@
     <!-- All Reviews -->
     <div id="allReviews"></div>
   </section>
+
   <div id="createGiftWrapper">
     <button id="createGiftBubble" class="floating-bubble">
       <img src="icons/gift-box.png" class="bubble-icon">
@@ -149,6 +156,23 @@
     <ul id="leaderboard-list" style="list-style:none; padding:0; margin:10px 0 0 0;"></ul>
     <div id="your-rank"></div>
   </section>
+
+
+  <div id="shareGiftWrapper">
+    <button id="shareGiftBubble" class="floating-bubble share-bubble">
+      <span style="font-size:24px;">🔁</span>
+    </button>
+
+    <div class="share-menu" id="shareMenu">
+      <button data-platform="whatsapp">WhatsApp</button>
+      <button data-platform="telegram">Telegram</button>
+      <button data-platform="facebook">Facebook</button>
+      <button data-platform="instagram">Instagram</button>
+      <button data-platform="system">More</button>
+    </div>
+
+    <div class="bubble-label">Share Gift</div>
+  </div>
 
   <!-- INSTALL APP – Floating Bottom Left -->
   <div id="installBubble" style="display:none;">
@@ -172,6 +196,7 @@
   <!-- Fireworks 2.0 -->
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script src="celebrate.js"></script>
 
